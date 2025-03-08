@@ -1,0 +1,81 @@
+// Import typography variables if needed
+@import 'text';
+
+// Table Layout
+$table-margin: $text-space-l 0;
+$table-width: 100%;
+$table-border-collapse: collapse;
+
+// Cell Spacing
+$table-cell-padding: clamp(0.5rem, calc(0.4rem + 0.5vw), 0.875rem);
+
+// Cell Typography
+$table-cell-line-height: 1.5;
+$table-cell-vertical-align: middle;
+
+// Responsive Breakpoint
+$table-stack-breakpoint: 640px;
+
+// Base Table Styling
+table {
+  width: $table-width;
+  margin: $table-margin;
+  border-collapse: $table-border-collapse;
+}
+
+// Table Header
+th {
+  padding: $table-cell-padding;
+  text-align: left;
+}
+
+// Table Cells
+td {
+  padding: $table-cell-padding;
+  line-height: $table-cell-line-height;
+  vertical-align: $table-cell-vertical-align;
+}
+
+// Responsive Table - Stack on Mobile
+@media (max-width: $table-stack-breakpoint) {
+  table {
+    display: block;
+    width: 100%;
+  }
+
+  caption {
+    display: block;
+  }
+
+  thead {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  tr {
+    display: block;
+    margin-bottom: $text-space-m;
+  }
+
+  td {
+    display: block;
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+
+    &::before {
+      content: attr(data-label);
+      position: absolute;
+      left: $table-cell-padding;
+      width: 45%;
+      padding-right: 10px;
+      text-align: left;
+    }
+  }
+}
