@@ -1,56 +1,43 @@
-import { HellaElement } from "@hellajs/core";
+import { HellaElement, html } from "@hellajs/core";
 import { appRouter } from "../app";
 
-const navTrigger: HellaElement<"input"> = {
-  tag: "input",
+const { input, label, span, header, nav, ul, li, a } = html;
+
+// @ts-ignore
+const navTrigger = input({
   type: "checkbox",
   id: "nav",
-  // @ts-ignore
   "aria-hidden": "true",
-};
+});
 
-const navLabel: HellaElement<"label"> = {
-  tag: "label",
+const navLabel = label(
   // @ts-ignore
-  for: "nav",
-  // @ts-ignore
-  "aria-label": "Toggle menu",
-  content: [
-    {
-      tag: "span",
-    },
-    {
-      tag: "span",
-    },
-    {
-      tag: "span",
-    },
-  ],
-};
+  { for: "nav", "aria-label": "Toggle menu" },
+  [span(), span(), span()]
+);
 
 const navLinks = ["text", "table"];
 
-export const NavComponent: HellaElement = {
-  tag: "header",
-  classes: "menu",
-  content: [
+export const NavComponent: HellaElement = header(
+  {
+    classes: "menu",
+  },
+  [
     navTrigger,
     navLabel,
-    {
-      tag: "nav",
-      content: [
-        {
-          tag: "ul",
-          content: navLinks.map((link) => ({
-            tag: "li",
-            content: {
-              tag: "a",
-              onclick: () => appRouter.navigate(`/${link}`),
-              content: link,
-            },
-          })),
-        },
-      ],
-    },
-  ],
-};
+    nav([
+      ul(
+        navLinks.map((link) =>
+          li([
+            a(
+              {
+                onclick: () => appRouter.navigate(`/${link}`),
+              },
+              link
+            ),
+          ])
+        )
+      ),
+    ]),
+  ]
+);
