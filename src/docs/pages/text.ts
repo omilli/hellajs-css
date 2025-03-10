@@ -1,4 +1,4 @@
-import { HellaElement, html } from "@hellajs/core";
+import { html } from "@hellajs/core";
 
 const { $, h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, blockquote, hr } =
   html;
@@ -51,11 +51,11 @@ const blockquotes = $([
 const codes = $([
   h2("6. Code"),
   p(["Here's an example of ", code("inline code"), " within a paragraph."]),
-  pre(
+  pre([
     code(`function greet(name: string) {
-    console.log(\`Hello, \${name}!\`);
-  }`)
-  ),
+  console.log(\`Hello, \${name}!\`);
+}`),
+  ]),
 ]);
 
 const hRule = $([
@@ -66,7 +66,7 @@ const hRule = $([
 ]);
 
 export const TextComponent = $([
-  h1("Typography"),
+  h1("Text"),
   intro,
   headings,
   paragraphs,

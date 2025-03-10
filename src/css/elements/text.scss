@@ -1,14 +1,14 @@
 @use "../theme/colors" as colors;
-@use "./config/text.config" as config;
+@use "./theme/text.theme" as theme;
 
 // Base styles
 html {
-  font-size: 100%;
+  font-size: var(--html-font-size, 100%);
 }
 
 body {
-  font-family: var(--body-font-family, #{config.$font-family});
-  line-height: var(--body-line-height, #{config.$p-line-height});
+  font-family: var(--body-font-family, #{theme.$font-family});
+  line-height: var(--body-line-height, #{theme.$p-line-height});
   -webkit-font-smoothing: antialiased;
   margin: 0;
   color: var(--body-text-color, #{colors.color("text")});
@@ -22,50 +22,51 @@ h3,
 h4,
 h5,
 h6 {
-  margin: var(--heading-margin-top, #{config.$text-space-l}) 0
-    var(--heading-margin-bottom, #{config.$h-margin-bottom});
-  overflow-wrap: var(--heading-overflow-wrap, #{config.$h-overflow-wrap});
-  line-height: var(--heading-line-height, #{config.$h-line-height});
+  margin: var(--heading-margin-top, #{theme.$text-space-l}) 0
+    var(--heading-margin-bottom, #{theme.$h-margin-bottom});
+  overflow-wrap: var(--heading-overflow-wrap, #{theme.$h-overflow-wrap});
+  line-height: var(--heading-line-height, #{theme.$h-line-height});
   color: var(--heading-color, #{colors.color("heading")});
 }
 
 h1 {
-  font-size: var(--h1-font-size, #{config.$h1-font-size});
+  font-size: var(--h1-font-size, #{theme.$h1-font-size});
 }
 
 h2 {
-  font-size: var(--h2-font-size, #{config.$h2-font-size});
+  font-size: var(--h2-font-size, #{theme.$h2-font-size});
 }
 
 h3 {
-  font-size: var(--h3-font-size, #{config.$h3-font-size});
+  font-size: var(--h3-font-size, #{theme.$h3-font-size});
 }
 
 h4 {
-  font-size: var(--h4-font-size, #{config.$h4-font-size});
+  font-size: var(--h4-font-size, #{theme.$h4-font-size});
 }
 
 h5 {
-  font-size: var(--h5-font-size, #{config.$h5-font-size});
+  font-size: var(--h5-font-size, #{theme.$h5-font-size});
 }
 
 h6 {
-  font-size: var(--h6-font-size, #{config.$h6-font-size});
+  font-size: var(--h6-font-size, #{theme.$h6-font-size});
 }
 
 // Text elements
 p {
-  font-size: var(--p-font-size, #{config.$p-font-size});
-  line-height: var(--p-line-height, #{config.$p-line-height});
-  margin: var(--p-margin, #{config.$p-margin});
-  overflow-wrap: var(--p-overflow-wrap, #{config.$h-overflow-wrap});
+  font-size: var(--p-font-size, #{theme.$p-font-size});
+  line-height: var(--p-line-height, #{theme.$p-line-height});
+  margin: var(--p-margin, #{theme.$p-margin});
+  overflow-wrap: var(--p-overflow-wrap, #{theme.$h-overflow-wrap});
   color: var(--p-color, #{colors.color("text")});
 }
 
 // Links
 a {
   color: var(--link-color, #{colors.color("link")});
-  text-decoration: var(--link-decoration, underline);
+  text-decoration: var(--link-decoration, #{theme.$link-decoration});
+  cursor: var(--link-cursor, #{theme.$link-cursor});
 
   &:hover,
   &:focus {
@@ -76,58 +77,53 @@ a {
 // Lists - simplified
 ul,
 ol {
-  margin: var(--list-margin, #{config.$list-margin});
-  padding-left: var(--list-padding-left, #{config.$list-padding-left});
+  margin: var(--list-margin, #{theme.$list-margin});
+  padding-left: var(--list-padding-left, #{theme.$list-padding-left});
   color: var(--list-color, #{colors.color("text")});
 
   ul,
   ol {
-    margin: var(--nested-list-margin, 0.25rem 0);
+    margin: var(--list-nested-margin, #{theme.$list-nested-margin});
   }
 }
 
 // Blockquote - simplified
 blockquote {
-  padding: var(--blockquote-padding, #{config.$blockquote-padding});
-  margin: var(--blockquote-margin, #{config.$blockquote-margin});
-  border: var(--blockquote-border-style, #{config.$blockquote-border-style})
-    var(--blockquote-border-width, #{config.$blockquote-border-width})
+  padding: var(--blockquote-padding, #{theme.$blockquote-padding});
+  margin: var(--blockquote-margin, #{theme.$blockquote-margin});
+  border: var(--blockquote-border-style, #{theme.$blockquote-border-style})
+    var(--blockquote-border-width, #{theme.$blockquote-border-width})
     var(--blockquote-border-color, #{colors.color("border")});
   background: var(--blockquote-background, #{colors.color("blockquote-bg")});
   color: var(--blockquote-color, #{colors.color("text")});
 }
 
-// Added essential typography elements
+// Other typography elements
 code,
 pre,
 kbd {
-  font-family: var(--code-font-family, #{config.$code-font-family});
-  font-size: var(--code-font-size, 0.9em);
+  font-family: var(--code-font-family, #{theme.$code-font-family});
+  font-size: var(--code-font-size, #{theme.$code-font-size});
 }
 
 pre {
-  overflow: auto;
-  padding: var(--pre-padding, #{config.$text-space-m});
+  overflow: var(--pre-overflow, auto);
+  padding: var(--pre-padding, #{theme.$pre-padding});
   background: var(--pre-background, #{colors.color("code-bg")});
-  border-radius: var(--code-border-radius, 3px);
+  border-radius: var(--pre-border-radius, #{theme.$code-border-radius});
   color: var(--pre-color, #{colors.color("text")});
 }
 
 code {
-  padding: var(--code-padding, 0.2em 0.4em);
+  padding: var(--code-padding, #{theme.$code-padding});
   background: var(--code-background, #{colors.color("code-bg")});
-  border-radius: var(--code-border-radius, 3px);
+  border-radius: var(--code-border-radius, #{theme.$code-border-radius});
   color: var(--code-color, #{colors.color("text")});
-}
-
-small {
-  font-size: var(--small-font-size, 0.8em);
-  color: var(--small-color, #{colors.color("muted")});
 }
 
 hr {
   border: 0;
-  border-top: var(--hr-border-width, 1px) solid
+  border-top: var(--hr-border-width, #{theme.$hr-border-width}) solid
     var(--hr-border-color, #{colors.color("border")});
-  margin: var(--hr-margin, #{config.$text-space-l} 0);
+  margin: var(--hr-margin, #{theme.$hr-margin});
 }

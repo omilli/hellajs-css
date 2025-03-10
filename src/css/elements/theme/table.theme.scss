@@ -1,0 +1,54 @@
+// Base Table
+$table-width: 100% !default;
+$table-margin: 1.5rem 0 !default;
+$table-border-collapse: collapse !default;
+$table-border-spacing: 0 !default;
+$table-display: table !default;
+$table-background: transparent !default;
+
+// Cell Layout
+$table-cell-padding: 0.75rem !default;
+$table-cell-vertical-align: middle !default;
+$table-cell-display: table-cell !default;
+$table-cell-text-align: left !default;
+$table-cell-line-height: 1.5 !default;
+
+// Header Styles
+$table-header-font-weight: 600 !default;
+$table-header-text-transform: none !default;
+$table-header-display: table-cell !default;
+
+// Borders
+$table-border-width: 1px !default;
+$table-header-border-width: 2px !default;
+$table-border-style: solid !default;
+
+// Mobile Layout
+$table-stack-breakpoint: 768px !default;
+$table-small-breakpoint: 480px !default;
+$table-mobile-display: block !default;
+$table-mobile-width: 100% !default;
+$table-mobile-margin: 0.75rem !default;
+$table-mobile-padding: 0.75rem 1rem !default;
+
+// Mobile Row/Cell
+$table-row-display: table-row !default;
+$table-row-mobile-display: block !default;
+$table-row-margin: 0 !default;
+$table-row-mobile-margin: 0.75rem !default;
+$table-row-border-radius: 4px !default;
+
+// Mobile Labels
+$table-label-width: 45% !default;
+$table-label-padding: 0.5rem !default;
+$table-label-font-weight: 600 !default;
+$table-label-text-transform: none !default;
+$table-label-align: left !default;
+$table-label-margin: 0.25rem !default;
+$table-mobile-label-width: 50% !default;
+$table-cell-mobile-min-height: 2.5rem !default;
+
+// Card Style
+$table-card-shadow: 0 1px 3px !default;
+$table-card-radius: 4px !default;
+$table-card-spacing: 1rem !default;

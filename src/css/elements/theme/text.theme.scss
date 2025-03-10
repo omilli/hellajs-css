@@ -1,3 +1,10 @@
+// Base HTML
+$html-font-size: 100% !default;
+
+// Body defaults
+$body-margin: 0 !default;
+$body-font-smoothing: antialiased !default;
+
 // Font families
 $font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
   Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif !default;
@@ -29,12 +36,31 @@ $p-line-height: 1.5 !default;
 $p-font-size: 1rem !default;
 $p-margin: $text-space-m 0 !default;
 
+// Links
+$link-decoration: underline !default;
+$list-padding-left: 2rem !default;
+$link-cursor: pointer !default;
+
 // Lists
 $list-margin: $text-space-m 0 !default;
 $list-padding-left: 2rem !default;
+$list-nested-margin: 0.25rem 0 !default;
 
 // Blockquotes - Simplified
 $blockquote-padding: $text-space-m !default;
 $blockquote-margin: $text-space-m 0 !default;
 $blockquote-border-width: 0 0 0 4px !default;
 $blockquote-border-style: solid !default;
+
+// Small text
+$small-font-size: 0.8em !default;
+
+// Code styles
+$code-font-size: 0.9em !default;
+$code-padding: 0.2em 0.4em !default;
+$code-border-radius: 3px !default;
+$pre-padding: $text-space-m !default;
+
+// Horizontal rule
+$hr-border-width: 1px !default;
+$hr-margin: $text-space-l 0 !default;
