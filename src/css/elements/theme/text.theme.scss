@@ -1,66 +1,84 @@
 // Base HTML
-$html-font-size: 100% !default;
+$html-font-size: var(--html-font-size, 100%) !default;
 
 // Body defaults
 $body-margin: 0 !default;
 $body-font-smoothing: antialiased !default;
 
 // Font families
-$font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-  Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif !default;
-$code-font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono",
-  Menlo, monospace !default;
+$font-family: var(
+  --body-font-family,
+  system-ui,
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  Oxygen,
+  Ubuntu,
+  Cantarell,
+  "Open Sans",
+  "Helvetica Neue",
+  sans-serif
+) !default;
+$code-font-family: var(
+  --code-font-family,
+  ui-monospace,
+  SFMono-Regular,
+  Consolas,
+  "Liberation Mono",
+  Menlo,
+  monospace
+) !default;
 
 // Simplified Spacing System
-$text-space-s: 0.5rem !default;
-$text-space-m: 1rem !default;
-$text-space-l: 1.5rem !default;
+$text-space-s: var(--text-space-s, 0.5rem) !default;
+$text-space-m: var(--text-space-m, 1rem) !default;
+$text-space-l: var(--text-space-l, 1.5rem) !default;
 
 // Headings
-$h-margin-bottom: $text-space-m !default;
-$h-overflow-wrap: break-word !default;
+$h-margin-bottom: var(--heading-margin-bottom, $text-space-m) !default;
+$h-overflow-wrap: var(--heading-overflow-wrap, break-word) !default;
 
 // Simplified Heading Font Sizes - Reduced clamp complexity
-$h1-font-size: clamp(2rem, 5vw, 3rem) !default;
-$h2-font-size: clamp(1.75rem, 4vw, 2.5rem) !default;
-$h3-font-size: clamp(1.5rem, 3vw, 2.25rem) !default;
-$h4-font-size: clamp(1.25rem, 2vw, 1.75rem) !default;
-$h5-font-size: 1.25rem !default;
-$h6-font-size: 1rem !default;
+$h1-font-size: var(--h1-font-size, clamp(2rem, 5vw, 3rem)) !default;
+$h2-font-size: var(--h2-font-size, clamp(1.75rem, 4vw, 2.5rem)) !default;
+$h3-font-size: var(--h3-font-size, clamp(1.5rem, 3vw, 2.25rem)) !default;
+$h4-font-size: var(--h4-font-size, clamp(1.25rem, 2vw, 1.75rem)) !default;
+$h5-font-size: var(--h5-font-size, 1.25rem) !default;
+$h6-font-size: var(--h6-font-size, 1rem) !default;
 
 // Simplified Line Heights
-$h-line-height: 1.2 !default;
-$p-line-height: 1.5 !default;
+$h-line-height: var(--heading-line-height, 1.2) !default;
+$p-line-height: var(--p-line-height, 1.5) !default;
 
 // Paragraph
-$p-font-size: 1rem !default;
-$p-margin: $text-space-m 0 !default;
+$p-font-size: var(--p-font-size, 1rem) !default;
+$p-margin: var(--p-margin, $text-space-m 0) !default;
 
 // Links
-$link-decoration: underline !default;
-$list-padding-left: 2rem !default;
-$link-cursor: pointer !default;
+$link-decoration: var(--link-decoration, underline) !default;
+$link-cursor: var(--link-cursor, pointer) !default;
 
 // Lists
-$list-margin: $text-space-m 0 !default;
-$list-padding-left: 2rem !default;
-$list-nested-margin: 0.25rem 0 !default;
+$list-margin: var(--list-margin, $text-space-m 0) !default;
+$list-padding-left: var(--list-padding-left, 2rem) !default;
+$list-nested-margin: var(--list-nested-margin, 0.25rem 0) !default;
 
 // Blockquotes - Simplified
-$blockquote-padding: $text-space-m !default;
-$blockquote-margin: $text-space-m 0 !default;
-$blockquote-border-width: 0 0 0 4px !default;
-$blockquote-border-style: solid !default;
+$blockquote-padding: var(--blockquote-padding, $text-space-m) !default;
+$blockquote-margin: var(--blockquote-margin, $text-space-m 0) !default;
+$blockquote-border-width: var(--blockquote-border-width, 0 0 0 4px) !default;
+$blockquote-border-style: var(--blockquote-border-style, solid) !default;
 
 // Small text
-$small-font-size: 0.8em !default;
+$small-font-size: var(--small-font-size, 0.8em) !default;
 
 // Code styles
-$code-font-size: 0.9em !default;
-$code-padding: 0.2em 0.4em !default;
-$code-border-radius: 3px !default;
-$pre-padding: $text-space-m !default;
+$code-font-size: var(--code-font-size, 0.9em) !default;
+$code-padding: var(--code-padding, 0.2em 0.4em) !default;
+$code-border-radius: var(--code-border-radius, 3px) !default;
+$pre-padding: var(--pre-padding, $text-space-m) !default;
 
 // Horizontal rule
-$hr-border-width: 1px !default;
-$hr-margin: $text-space-l 0 !default;
+$hr-border-width: var(--hr-border-width, 1px) !default;
+$hr-margin: var(--hr-margin, $text-space-l 0) !default;

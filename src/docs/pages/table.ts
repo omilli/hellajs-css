@@ -3,7 +3,7 @@ import { html } from "@hellajs/core";
 const { $, table, thead, tbody, tr, th, td, h1, h2 } = html;
 
 const basicTable = table([
-  thead(tr([th("Name"), th("Role"), th("Department")])),
+  thead([tr([th("Name"), th("Role"), th("Department")])]),
   tbody([
     tr([
       td({ data: { label: "Name" } }, "John Doe"),

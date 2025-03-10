@@ -3,16 +3,16 @@
 
 // Base styles
 html {
-  font-size: var(--html-font-size, 100%);
+  font-size: theme.$html-font-size;
 }
 
 body {
-  font-family: var(--body-font-family, #{theme.$font-family});
-  line-height: var(--body-line-height, #{theme.$p-line-height});
+  font-family: theme.$font-family;
+  line-height: theme.$p-line-height;
   -webkit-font-smoothing: antialiased;
   margin: 0;
-  color: var(--body-text-color, #{colors.color("text")});
-  background-color: var(--body-background, #{colors.color("background")});
+  color: colors.color("text");
+  background-color: colors.color("background");
 }
 
 // Heading styles - simplified
@@ -22,108 +22,105 @@ h3,
 h4,
 h5,
 h6 {
-  margin: var(--heading-margin-top, #{theme.$text-space-l}) 0
-    var(--heading-margin-bottom, #{theme.$h-margin-bottom});
-  overflow-wrap: var(--heading-overflow-wrap, #{theme.$h-overflow-wrap});
-  line-height: var(--heading-line-height, #{theme.$h-line-height});
-  color: var(--heading-color, #{colors.color("heading")});
+  margin: theme.$text-space-l 0 theme.$h-margin-bottom;
+  overflow-wrap: theme.$h-overflow-wrap;
+  line-height: theme.$h-line-height;
+  color: colors.color("heading");
 }
 
 h1 {
-  font-size: var(--h1-font-size, #{theme.$h1-font-size});
+  font-size: theme.$h1-font-size;
 }
 
 h2 {
-  font-size: var(--h2-font-size, #{theme.$h2-font-size});
+  font-size: theme.$h2-font-size;
 }
 
 h3 {
-  font-size: var(--h3-font-size, #{theme.$h3-font-size});
+  font-size: theme.$h3-font-size;
 }
 
 h4 {
-  font-size: var(--h4-font-size, #{theme.$h4-font-size});
+  font-size: theme.$h4-font-size;
 }
 
 h5 {
-  font-size: var(--h5-font-size, #{theme.$h5-font-size});
+  font-size: theme.$h5-font-size;
 }
 
 h6 {
-  font-size: var(--h6-font-size, #{theme.$h6-font-size});
+  font-size: theme.$h6-font-size;
 }
 
 // Text elements
 p {
-  font-size: var(--p-font-size, #{theme.$p-font-size});
-  line-height: var(--p-line-height, #{theme.$p-line-height});
-  margin: var(--p-margin, #{theme.$p-margin});
-  overflow-wrap: var(--p-overflow-wrap, #{theme.$h-overflow-wrap});
-  color: var(--p-color, #{colors.color("text")});
+  font-size: theme.$p-font-size;
+  line-height: theme.$p-line-height;
+  margin: theme.$p-margin;
+  overflow-wrap: theme.$h-overflow-wrap;
+  color: colors.color("text");
 }
 
 // Links
 a {
-  color: var(--link-color, #{colors.color("link")});
-  text-decoration: var(--link-decoration, #{theme.$link-decoration});
-  cursor: var(--link-cursor, #{theme.$link-cursor});
+  color: colors.color("link");
+  text-decoration: theme.$link-decoration;
+  cursor: theme.$link-cursor;
 
   &:hover,
   &:focus {
-    color: var(--link-hover-color, #{colors.color("link-hover")});
+    color: colors.color("link-hover");
   }
 }
 
 // Lists - simplified
 ul,
 ol {
-  margin: var(--list-margin, #{theme.$list-margin});
-  padding-left: var(--list-padding-left, #{theme.$list-padding-left});
-  color: var(--list-color, #{colors.color("text")});
+  margin: theme.$list-margin;
+  padding-left: theme.$list-padding-left;
+  color: colors.color("text");
 
   ul,
   ol {
-    margin: var(--list-nested-margin, #{theme.$list-nested-margin});
+    margin: theme.$list-nested-margin;
   }
 }
 
 // Blockquote - simplified
 blockquote {
-  padding: var(--blockquote-padding, #{theme.$blockquote-padding});
-  margin: var(--blockquote-margin, #{theme.$blockquote-margin});
-  border: var(--blockquote-border-style, #{theme.$blockquote-border-style})
-    var(--blockquote-border-width, #{theme.$blockquote-border-width})
-    var(--blockquote-border-color, #{colors.color("border")});
-  background: var(--blockquote-background, #{colors.color("blockquote-bg")});
-  color: var(--blockquote-color, #{colors.color("text")});
+  padding: theme.$blockquote-padding;
+  margin: theme.$blockquote-margin;
+  border: theme.$blockquote-border-style theme.$blockquote-border-width
+    colors.color("border");
+  background: colors.color("blockquote-bg");
+  color: colors.color("text");
 }
 
 // Other typography elements
 code,
 pre,
 kbd {
-  font-family: var(--code-font-family, #{theme.$code-font-family});
-  font-size: var(--code-font-size, #{theme.$code-font-size});
+  font-family: theme.$code-font-family;
+  font-size: theme.$code-font-size;
 }
 
 pre {
-  overflow: var(--pre-overflow, auto);
-  padding: var(--pre-padding, #{theme.$pre-padding});
-  background: var(--pre-background, #{colors.color("code-bg")});
-  border-radius: var(--pre-border-radius, #{theme.$code-border-radius});
-  color: var(--pre-color, #{colors.color("text")});
+  overflow: auto;
+  padding: theme.$pre-padding;
+  background: colors.color("code-bg");
+  border-radius: theme.$code-border-radius;
+  color: colors.color("text");
 }
 
 code {
-  padding: var(--code-padding, #{theme.$code-padding});
-  background: var(--code-background, #{colors.color("code-bg")});
-  border-radius: var(--code-border-radius, #{theme.$code-border-radius});
-  color: var(--code-color, #{colors.color("text")});
+  padding: theme.$code-padding;
+  background: colors.color("code-bg");
+  border-radius: theme.$code-border-radius;
+  color: colors.color("text");
 }
 
 hr {
   border: 0;
-  border-top: var(--hr-border-width, #{theme.$hr-border-width}) solid
-    var(--hr-border-color, #{colors.color("border")});
-  margin: var(--hr-margin, #{theme.$hr-margin});
+  border-top: theme.$hr-border-width solid colors.color("border");
+  margin: theme.$hr-margin;
 }

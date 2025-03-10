@@ -13,7 +13,7 @@
 
 ## Customization System
 
-Our library uses a unique dual-layer customization system:
+library uses a unique dual-layer customization system:
 
 ### 1. Build-time Customization (SCSS)
 

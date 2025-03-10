@@ -1,150 +1,106 @@
 @use "../theme/colors" as colors;
 @use "./theme/table.theme" as theme;
 
-// Base Table Styling
+// Base Table Styling - Only structural properties
 table {
-  display: var(--table-display, #{theme.$table-display});
-  width: var(--table-width, #{theme.$table-width});
-  margin: var(--table-margin, #{theme.$table-margin});
-  border-collapse: var(
-    --table-border-collapse,
-    #{theme.$table-border-collapse}
-  );
-  border-spacing: var(--table-border-spacing, #{theme.$table-border-spacing});
-  background: var(--table-background, #{theme.$table-background});
+  display: theme.$table-display;
+  width: theme.$table-width;
+  margin: theme.$table-margin;
+  border-collapse: theme.$table-border-collapse;
+  border-spacing: theme.$table-border-spacing;
+  background: theme.$table-background;
 }
 
 thead {
-  // Instead of display: none, clip it for accessibility
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+  display: theme.$table-head-display;
+  background: theme.$table-head-background;
 }
 
 // Table Row
 tr {
-  display: var(--table-row-display, #{theme.$table-row-display});
-  margin: var(--table-row-margin, #{theme.$table-row-margin});
+  display: theme.$table-row-display;
+  margin: theme.$table-row-margin;
 }
 
-// Table Header
+// Table Header - Minimal styling
 th {
-  display: var(--table-header-display, #{theme.$table-header-display});
-  padding: var(--table-header-padding, #{theme.$table-cell-padding});
-  text-align: var(--table-header-align, #{theme.$table-cell-text-align});
-  vertical-align: var(
-    --table-header-vertical-align,
-    #{theme.$table-cell-vertical-align}
-  );
-  font-weight: var(
-    --table-header-font-weight,
-    #{theme.$table-header-font-weight}
-  );
-  text-transform: var(
-    --table-header-text-transform,
-    #{theme.$table-header-text-transform}
-  );
-  border-bottom: var(
-      --table-header-border-width,
-      #{theme.$table-header-border-width}
-    )
-    var(--table-border-style, #{theme.$table-border-style})
-    var(--table-border-color, #{colors.color("border")});
-  color: var(--table-header-color, #{colors.color("heading")});
+  display: theme.$table-header-display;
+  padding: theme.$table-header-padding;
+  text-align: theme.$table-header-text-align;
+  vertical-align: theme.$table-header-vertical-align;
+  font-weight: theme.$table-header-font-weight;
+  text-transform: theme.$table-header-text-transform;
+  border-bottom: theme.$table-header-border-width theme.$table-border-style
+    (theme.$table-border-color or colors.color("border"));
+  color: theme.$table-header-color;
 }
 
-// Table Cells
+// Table Cells - Purely functional
 td {
-  display: var(--table-cell-display, #{theme.$table-cell-display});
-  padding: var(--table-cell-padding, #{theme.$table-cell-padding});
-  text-align: var(--table-cell-align, #{theme.$table-cell-text-align});
-  vertical-align: var(
-    --table-cell-vertical-align,
-    #{theme.$table-cell-vertical-align}
-  );
-  line-height: var(--table-cell-line-height, #{theme.$table-cell-line-height});
-  border-bottom: var(--table-border-width, #{theme.$table-border-width})
-    var(--table-border-style, #{theme.$table-border-style})
-    var(--table-border-color, #{colors.color("border")});
+  display: theme.$table-cell-display;
+  padding: theme.$table-cell-padding;
+  text-align: theme.$table-cell-text-align;
+  line-height: theme.$table-cell-line-height;
+  border-bottom: theme.$table-border-width theme.$table-border-style
+    (theme.$table-border-color or colors.color("border"));
 }
 
-// Responsive Table
+// Responsive Table - Preserves functionality with minimal styling
 @media (max-width: #{theme.$table-stack-breakpoint}) {
   table {
-    display: var(--table-mobile-display, #{theme.$table-mobile-display});
-    width: var(--table-mobile-width, #{theme.$table-mobile-width});
-    border: 0;
+    display: theme.$table-mobile-display;
+    width: theme.$table-mobile-width;
+    border: theme.$table-mobile-border;
   }
 
+  // Visually hide header but keep accessible for screen readers
   thead {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: theme.$table-head-mobile-position;
+    width: theme.$table-head-mobile-width;
+    height: theme.$table-head-mobile-height;
+    padding: theme.$table-head-mobile-padding;
+    margin: theme.$table-head-mobile-margin;
+    overflow: theme.$table-head-mobile-overflow;
+    clip: theme.$table-head-mobile-clip;
+    white-space: theme.$table-head-mobile-white-space;
+    border: theme.$table-head-mobile-border;
   }
 
   tbody {
-    width: var(--table-mobile-width, #{theme.$table-mobile-width});
-    display: var(--table-mobile-display, #{theme.$table-mobile-display});
+    width: theme.$table-mobile-width;
+    display: theme.$table-mobile-display;
   }
 
+  // Rows become containers
   tr {
-    display: var(
-      --table-row-mobile-display,
-      #{theme.$table-row-mobile-display}
-    );
-    margin-bottom: var(
-      --table-row-mobile-margin,
-      #{theme.$table-row-mobile-margin}
-    );
-    border-radius: var(
-      --table-row-border-radius,
-      #{theme.$table-row-border-radius}
-    );
-    background: var(--table-row-background, #{colors.color("background")});
-    box-shadow: var(--table-card-shadow, #{theme.$table-card-shadow})
-      var(--table-shadow-color, #{colors.color("shadow")});
-    border: var(--table-row-border-width, #{theme.$table-border-width})
-      var(--table-row-border-style, #{theme.$table-border-style})
-      var(--table-row-border-color, #{colors.color("border")});
+    display: theme.$table-row-mobile-display;
+    margin-bottom: theme.$table-row-mobile-margin;
+    background: theme.$table-row-background;
+    border: theme.$table-row-border-width theme.$table-row-border-style
+      (theme.$table-row-border-color or colors.color("border"));
   }
 
+  // Each cell needs to be labeled for clarity
   td {
     position: relative;
-    display: var(--table-cell-mobile-display, block);
-    padding: var(--table-mobile-padding, #{theme.$table-mobile-padding});
-    padding-left: var(--table-mobile-label-width, 50%);
-    text-align: var(--table-cell-mobile-align, left);
-    min-height: var(--table-cell-mobile-min-height, 2.5rem);
+    display: theme.$table-cell-mobile-display;
+    padding: theme.$table-mobile-padding;
+    padding-left: theme.$table-mobile-label-width;
+    text-align: theme.$table-cell-mobile-align;
+    min-height: theme.$table-cell-mobile-min-height;
 
+    // Create accessible labels from data-label attribute
     &::before {
       content: attr(data-label);
       position: absolute;
-      left: var(--table-label-left, #{theme.$table-cell-padding});
-      top: var(--table-label-top, #{theme.$table-cell-padding});
-      width: var(--table-label-width, calc(50% - #{theme.$table-cell-padding}));
-      padding-right: var(--table-label-padding, 0.5rem);
-      font-weight: var(
-        --table-label-font-weight,
-        #{theme.$table-header-font-weight}
-      );
-      text-transform: var(
-        --table-label-text-transform,
-        #{theme.$table-header-text-transform}
-      );
-      text-align: var(--table-label-align, left);
-      color: var(--table-label-color, #{colors.color("heading")});
+      left: theme.$table-label-left;
+      top: theme.$table-label-top;
+      width: calc(40% - #{theme.$table-cell-padding});
+      padding-right: theme.$table-label-padding;
+      font-weight: theme.$table-label-font-weight;
+      text-transform: theme.$table-label-text-transform;
+      text-align: theme.$table-label-align;
+      color: theme.$table-label-color;
     }
 
     &:empty {
@@ -153,20 +109,21 @@ td {
   }
 }
 
-// Small screen optimizations
+// Small screen optimizations - Vertical layout
 @media (max-width: #{theme.$table-small-breakpoint}) {
   td {
-    padding: var(--table-mobile-small-padding, #{theme.$table-mobile-padding});
-    padding-left: var(--table-cell-padding, #{theme.$table-cell-padding});
-    text-align: var(--table-cell-mobile-small-align, left);
+    padding: theme.$table-mobile-small-padding;
+    padding-left: theme.$table-cell-padding;
+    text-align: theme.$table-cell-mobile-small-align;
 
+    // Switch to vertical layout for very small screens
     &::before {
       position: relative;
       display: block;
       left: auto;
       top: auto;
       width: 100%;
-      margin-bottom: var(--table-label-margin, 0.25rem);
+      margin-bottom: theme.$table-label-margin;
     }
   }
 }

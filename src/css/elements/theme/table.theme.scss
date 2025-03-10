@@ -1,54 +1,113 @@
-// Base Table
-$table-width: 100% !default;
-$table-margin: 1.5rem 0 !default;
-$table-border-collapse: collapse !default;
-$table-border-spacing: 0 !default;
-$table-display: table !default;
-$table-background: transparent !default;
+// Base Table - Minimal defaults
+$table-width: var(--table-width, 100%) !default;
+$table-margin: var(--table-margin, 0) !default;
+$table-border-collapse: var(--table-border-collapse, collapse) !default;
+$table-border-spacing: var(--table-border-spacing, 0) !default;
+$table-display: var(--table-display, table) !default;
+$table-background: var(--table-background, transparent) !default;
 
-// Cell Layout
-$table-cell-padding: 0.75rem !default;
-$table-cell-vertical-align: middle !default;
-$table-cell-display: table-cell !default;
-$table-cell-text-align: left !default;
-$table-cell-line-height: 1.5 !default;
+// Cell Layout - Functional defaults
+$table-cell-padding: var(--table-cell-padding, 0.5rem) !default;
+$table-cell-vertical-align: var(--table-cell-vertical-align, top) !default;
+$table-cell-display: var(--table-cell-display, table-cell) !default;
+$table-cell-text-align: var(--table-cell-text-align, inherit) !default;
+$table-cell-line-height: var(--table-cell-line-height, inherit) !default;
 
-// Header Styles
-$table-header-font-weight: 600 !default;
-$table-header-text-transform: none !default;
-$table-header-display: table-cell !default;
+// Header Styles - Minimal differentiation
+$table-header-font-weight: var(--table-header-font-weight, bold) !default;
+$table-header-text-transform: var(--table-header-text-transform, none) !default;
+$table-header-display: var(--table-header-display, table-cell) !default;
+$table-header-padding: var(
+  --table-header-padding,
+  $table-cell-padding
+) !default;
+$table-header-text-align: var(--table-header-text-align, inherit) !default;
+$table-header-vertical-align: var(
+  --table-header-vertical-align,
+  $table-cell-vertical-align
+) !default;
+$table-header-color: var(--table-header-color, null) !default;
 
-// Borders
-$table-border-width: 1px !default;
-$table-header-border-width: 2px !default;
-$table-border-style: solid !default;
+// Head Layout
+$table-head-display: var(--table-head-display, table-header-group) !default;
+$table-head-background: var(--table-head-background, transparent) !default;
 
-// Mobile Layout
+// Mobile Head Layout - For accessibility
+$table-head-mobile-position: var(
+  --table-head-mobile-position,
+  absolute
+) !default;
+$table-head-mobile-width: var(--table-head-mobile-width, 1px) !default;
+$table-head-mobile-height: var(--table-head-mobile-height, 1px) !default;
+$table-head-mobile-padding: var(--table-head-mobile-padding, 0) !default;
+$table-head-mobile-margin: var(--table-head-mobile-margin, -1px) !default;
+$table-head-mobile-overflow: var(--table-head-mobile-overflow, hidden) !default;
+$table-head-mobile-clip: var(
+  --table-head-mobile-clip,
+  rect(0, 0, 0, 0)
+) !default;
+$table-head-mobile-white-space: var(
+  --table-head-mobile-white-space,
+  nowrap
+) !default;
+$table-head-mobile-border: var(--table-head-mobile-border, 0) !default;
+
+// Borders - Minimal or none
+$table-border-width: var(--table-border-width, 0) !default;
+$table-header-border-width: var(--table-header-border-width, 0) !default;
+$table-border-style: var(--table-border-style, solid) !default;
+$table-border-color: var(--table-border-color, null) !default;
+
+// Mobile Layout - Keep breakpoints
 $table-stack-breakpoint: 768px !default;
 $table-small-breakpoint: 480px !default;
-$table-mobile-display: block !default;
-$table-mobile-width: 100% !default;
-$table-mobile-margin: 0.75rem !default;
-$table-mobile-padding: 0.75rem 1rem !default;
+$table-mobile-display: var(--table-mobile-display, block) !default;
+$table-mobile-width: var(--table-mobile-width, 100%) !default;
+$table-mobile-margin: var(--table-mobile-margin, 0) !default;
+$table-mobile-padding: var(
+  --table-mobile-padding,
+  $table-cell-padding
+) !default;
+$table-mobile-small-padding: var(
+  --table-mobile-small-padding,
+  $table-cell-padding
+) !default;
+$table-mobile-border: var(--table-mobile-border, 0) !default;
 
-// Mobile Row/Cell
-$table-row-display: table-row !default;
-$table-row-mobile-display: block !default;
-$table-row-margin: 0 !default;
-$table-row-mobile-margin: 0.75rem !default;
-$table-row-border-radius: 4px !default;
+// Mobile Row/Cell - Functional not decorative
+$table-row-display: var(--table-row-display, table-row) !default;
+$table-row-mobile-display: var(--table-row-mobile-display, block) !default;
+$table-row-margin: var(--table-row-margin, 0) !default;
+$table-row-mobile-margin: var(--table-row-mobile-margin, 0.5rem) !default;
+$table-row-background: var(--table-row-background, transparent) !default;
+$table-row-border-width: var(--table-row-border-width, 0) !default;
+$table-row-border-style: var(--table-row-border-style, solid) !default;
+$table-row-border-color: var(--table-row-border-color, null) !default;
+$table-shadow-color: var(--table-shadow-color, null) !default;
 
-// Mobile Labels
-$table-label-width: 45% !default;
-$table-label-padding: 0.5rem !default;
-$table-label-font-weight: 600 !default;
-$table-label-text-transform: none !default;
-$table-label-align: left !default;
-$table-label-margin: 0.25rem !default;
-$table-mobile-label-width: 50% !default;
-$table-cell-mobile-min-height: 2.5rem !default;
+// Mobile Labels - Functional for accessibility
+$table-label-width: var(--table-label-width, 40%) !default;
+$table-label-padding: var(--table-label-padding, 0.25rem) !default;
+$table-label-font-weight: var(--table-label-font-weight, inherit) !default;
+$table-label-text-transform: var(--table-label-text-transform, none) !default;
+$table-label-align: var(--table-label-align, inherit) !default;
+$table-label-margin: var(--table-label-margin, 0.25rem) !default;
+$table-label-left: var(--table-label-left, 0) !default;
+$table-label-top: var(--table-label-top, $table-cell-padding) !default;
+$table-label-color: var(--table-label-color, null) !default;
+$table-mobile-label-width: var(--table-mobile-label-width, 40%) !default;
+$table-cell-mobile-display: var(--table-cell-mobile-display, block) !default;
+$table-cell-mobile-align: var(--table-cell-mobile-align, inherit) !default;
+$table-cell-mobile-small-align: var(
+  --table-cell-mobile-small-align,
+  inherit
+) !default;
+$table-cell-mobile-min-height: var(
+  --table-cell-mobile-min-height,
+  1.5rem
+) !default;
 
-// Card Style
-$table-card-shadow: 0 1px 3px !default;
-$table-card-radius: 4px !default;
-$table-card-spacing: 1rem !default;
+// Card Style - Minimized
+$table-card-shadow: var(--table-card-shadow, none) !default;
+$table-card-radius: var(--table-card-radius, 0) !default;
+$table-card-spacing: var(--table-card-spacing, 0) !default;
