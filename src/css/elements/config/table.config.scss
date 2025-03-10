@@ -1,0 +1,19 @@
+// Table Layout
+$table-margin: 1.5rem 0 !default;
+$table-width: 100% !default;
+$table-border-collapse: collapse !default;
+
+// Cell Spacing with responsive padding
+$table-cell-padding: clamp(0.5rem, calc(0.4rem + 0.5vw), 0.875rem) !default;
+
+// Cell Typography
+$table-cell-line-height: 1.5 !default;
+$table-cell-vertical-align: middle !default;
+
+// Responsive Breakpoint
+$table-stack-breakpoint: 640px !default;
+
+// Mobile Header
+$table-header-font-weight: bold !default;
+$table-header-width: 45% !default;
+$table-mobile-padding-left: 50% !default;

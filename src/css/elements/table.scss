@@ -1,0 +1,85 @@
+@use "../theme/colors" as colors;
+@use "./config/table.config" as config;
+
+// Base Table Styling
+table {
+  width: var(--table-width, #{config.$table-width});
+  margin: var(--table-margin, #{config.$table-margin});
+  border-collapse: var(
+    --table-border-collapse,
+    #{config.$table-border-collapse}
+  );
+  color: colors.color("text");
+}
+
+// Table Header
+th {
+  padding: var(--table-header-padding, #{config.$table-cell-padding});
+  text-align: var(--table-header-align, left);
+  border-bottom: var(--table-header-border, 2px solid) colors.color("border");
+  color: colors.color("heading");
+}
+
+// Table Cells
+td {
+  padding: var(--table-cell-padding, #{config.$table-cell-padding});
+  line-height: var(--table-cell-line-height, #{config.$table-cell-line-height});
+  vertical-align: var(
+    --table-cell-vertical-align,
+    #{config.$table-cell-vertical-align}
+  );
+  border-bottom: var(--table-cell-border, 1px solid) colors.color("border");
+}
+
+// Responsive Table - Stack on Mobile
+@media (max-width: #{config.$table-stack-breakpoint}) {
+  table {
+    display: var(--table-mobile-display, block);
+    width: var(--table-mobile-width, 100%);
+  }
+
+  caption {
+    display: var(--table-caption-display, block);
+  }
+
+  thead {
+    border: var(--table-head-border, 0);
+    clip: var(--table-head-clip, rect(0 0 0 0));
+    height: var(--table-head-height, 1px);
+    margin: var(--table-head-margin, -1px);
+    overflow: var(--table-head-overflow, hidden);
+    padding: var(--table-head-padding, 0);
+    position: var(--table-head-position, absolute);
+    width: var(--table-head-width, 1px);
+  }
+
+  tr {
+    display: var(--table-row-mobile-display, block);
+    margin-bottom: var(--table-row-margin, 1rem);
+    border-bottom: var(--table-row-border, 2px solid) colors.color("border");
+  }
+
+  td {
+    display: var(--table-cell-mobile-display, block);
+    text-align: var(--table-cell-mobile-align, right);
+    position: var(--table-cell-mobile-position, relative);
+    padding-left: var(
+      --table-cell-mobile-padding-left,
+      #{config.$table-mobile-padding-left}
+    );
+
+    &::before {
+      content: attr(data-label);
+      position: var(--table-label-position, absolute);
+      left: var(--table-label-left, #{config.$table-cell-padding});
+      width: var(--table-label-width, #{config.$table-header-width});
+      padding-right: var(--table-label-padding, 10px);
+      text-align: var(--table-label-align, left);
+      font-weight: var(
+        --table-label-weight,
+        #{config.$table-header-font-weight}
+      );
+      color: colors.color("heading");
+    }
+  }
+}

@@ -1,4 +1,10 @@
-@import "./reset";
-@import "./text.css";
-@import "./form.css";
-@import "./table.css";
+@use "./core/reset";
+
+@use "./theme/colors";
+@use "./theme/size";
+
+@use "./elements/form";
+@use "./elements/table";
+@use "./elements/text";
+
+@use "./components/menu";
