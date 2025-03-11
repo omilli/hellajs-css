@@ -10,38 +10,79 @@
 - **Responsive design**:
   - Fluid typography using clamp, calc, and viewport units
   - Container queries for component-level responsiveness
+  - **No preprocessor dependencies**: Pure JavaScript-based CSS generation
+  - **Type-safe theming**: Structured theme objects with dot notation paths
 
 ## Customization System
 
-library uses a unique dual-layer customization system:
+hellacss uses a unique dual-layer customization system powered by JavaScript:
 
-### 1. Build-time Customization (SCSS)
+### 1. Build-time Customization (JavaScript)
 
-Every component defines its default values using SCSS variables with `!default`:
+The theme system has three main parts:
 
-```scss
-// Define defaults that can be overridden before import
-$table-width: 100% !default;
-$table-margin: 1.5rem 0 !default;
-$table-border-collapse: collapse !default;
+```ts
+// 1. Define themes with strongly typed objects
+const lightTheme = createTheme("light", {
+  colors: {
+    background: "#ffffff",
+    text: "#1c1c1c",
+    border: "#dddddd",
+  },
+});
+
+// 2. Component-specific variables that can reference theme values
+const tableVars = createVars("light", {
+  textColor: lightTheme.colors.text,
+});
+
+// 3. Create styles that use those variables
+createStyle(["table"], {
+  color: tableVars.textColor,
+});
+
+createStyle(["table", "th"], {
+  color: tableVars.textColor,
+});
+
+// Generate final CSS output
+const css = theme.generate();
 ```
 
-Override these by setting variables before importing:
+#### Unit Helper Functions
 
-```scss
-// Your project's main.scss
-$table-width: 90%;
-@use "@ssg/elements/table";
+The library includes helper functions for CSS units, e.g:
+
+```ts
+import { px, rem, em, perc, vh, vw, calc, clamp } from "./lib/units";
+
+px(10); // "10px"
+px(10, 20); // "10px 20px"
+rem(2.2); // "2.2rem"
+perc(100); // "100%"
+calc("100% - 20px"); // "calc(100% - 20px)"
+clamp("1rem", "5vw", "2rem"); // "clamp(1rem, 5vw, 2rem)"
 ```
 
 ### 2. Runtime Customization (CSS)
 
-Every property uses CSS variables with SCSS fallbacks:
+The build process automatically generates CSS variables for every theme property:
 
-```scss
+```css
+/* Root level vars from createTheme() */
+:root {
+  --colors-background: #ffffff;
+  --colors-text: #1c1c1c;
+  --colors-border: #dddddd;
+}
+
+/* Component styles use vars with fallbacks */
 table {
-  width: var(--table-width, #{$table-width});
-  margin: var(--table-margin, #{$table-margin});
+  color: var(--table-text-color, #1c1c1c);
+}
+
+table th {
+  color: var(--table-text-color, #1c1c1c);
 }
 ```
 
@@ -50,27 +91,30 @@ This enables runtime customization via CSS:
 ```css
 /* Global customization */
 :root {
-  --table-width: 90%;
+  --colors-background: #f5f5f5;
 }
 
 /* Component-specific customization */
-.compact-table {
-  --table-margin: 0.5rem 0;
+.custom-table {
+  --table-text-color: blue;
 }
 ```
 
-### Theme System
+#### Theme Switching
 
-Colors and other theme values are managed through a central theme system:
+Switch between themes using the provided API and the system will update all CSS variables automatically.:
 
-```scss
-// Light mode defaults
---color-text: #333333;
---color-background: #ffffff;
+```ts
+const lightTheme = createTheme("light", {
+  /* ... */
+});
+const darkTheme = createTheme("dark", {
+  /* ... */
+});
 
-// Dark mode via attribute
-[data-theme="dark"] {
-  --color-text: #eeeeee;
-  --color-background: #222222;
-}
+// Switch between themes
+theme.setActiveTheme("dark");
+
+// Toggle between themes
+theme.toggle("light", "dark");
 ```

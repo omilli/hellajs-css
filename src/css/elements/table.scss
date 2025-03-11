@@ -1,129 +1,88 @@
 @use "../theme/colors" as colors;
 @use "./theme/table.theme" as theme;
 
-// Base Table Styling - Only structural properties
+// Minimal Base Table
 table {
-  display: theme.$table-display;
   width: theme.$table-width;
-  margin: theme.$table-margin;
   border-collapse: theme.$table-border-collapse;
-  border-spacing: theme.$table-border-spacing;
-  background: theme.$table-background;
 }
 
-thead {
-  display: theme.$table-head-display;
-  background: theme.$table-head-background;
-}
-
-// Table Row
-tr {
-  display: theme.$table-row-display;
-  margin: theme.$table-row-margin;
-}
-
-// Table Header - Minimal styling
+// Table Header - Just enough to distinguish from cells
 th {
-  display: theme.$table-header-display;
-  padding: theme.$table-header-padding;
-  text-align: theme.$table-header-text-align;
-  vertical-align: theme.$table-header-vertical-align;
-  font-weight: theme.$table-header-font-weight;
-  text-transform: theme.$table-header-text-transform;
-  border-bottom: theme.$table-header-border-width theme.$table-border-style
-    (theme.$table-border-color or colors.color("border"));
-  color: theme.$table-header-color;
-}
-
-// Table Cells - Purely functional
-td {
-  display: theme.$table-cell-display;
   padding: theme.$table-cell-padding;
-  text-align: theme.$table-cell-text-align;
-  line-height: theme.$table-cell-line-height;
-  border-bottom: theme.$table-border-width theme.$table-border-style
-    (theme.$table-border-color or colors.color("border"));
+  font-weight: theme.$table-header-font-weight;
+  text-align: theme.$table-header-text-align;
 }
 
-// Responsive Table - Preserves functionality with minimal styling
+// Table Cells - Minimal
+td {
+  padding: theme.$table-cell-padding;
+}
+
+// Responsive layout - Essential functionality only
 @media (max-width: #{theme.$table-stack-breakpoint}) {
+  // Make table act like a block container
   table {
     display: theme.$table-mobile-display;
     width: theme.$table-mobile-width;
-    border: theme.$table-mobile-border;
   }
 
-  // Visually hide header but keep accessible for screen readers
+  tbody {
+    display: theme.$table-mobile-tbody-display;
+    width: theme.$table-mobile-width;
+  }
+
+  tr {
+    display: theme.$table-mobile-tr-display;
+    width: theme.$table-mobile-width;
+    margin-bottom: theme.$table-row-mobile-margin;
+  }
+
+  // Hide headers but keep accessible for screen readers
   thead {
     position: theme.$table-head-mobile-position;
     width: theme.$table-head-mobile-width;
     height: theme.$table-head-mobile-height;
-    padding: theme.$table-head-mobile-padding;
     margin: theme.$table-head-mobile-margin;
     overflow: theme.$table-head-mobile-overflow;
     clip: theme.$table-head-mobile-clip;
-    white-space: theme.$table-head-mobile-white-space;
-    border: theme.$table-head-mobile-border;
   }
 
-  tbody {
-    width: theme.$table-mobile-width;
-    display: theme.$table-mobile-display;
-  }
-
-  // Rows become containers
-  tr {
-    display: theme.$table-row-mobile-display;
-    margin-bottom: theme.$table-row-mobile-margin;
-    background: theme.$table-row-background;
-    border: theme.$table-row-border-width theme.$table-row-border-style
-      (theme.$table-row-border-color or colors.color("border"));
-  }
-
-  // Each cell needs to be labeled for clarity
+  // Make cells block-level with labels
   td {
-    position: relative;
-    display: theme.$table-cell-mobile-display;
-    padding: theme.$table-mobile-padding;
+    position: theme.$table-cell-position;
+    display: theme.$table-mobile-td-display;
     padding-left: theme.$table-mobile-label-width;
-    text-align: theme.$table-cell-mobile-align;
     min-height: theme.$table-cell-mobile-min-height;
 
-    // Create accessible labels from data-label attribute
+    // Use data-label for accessibility
     &::before {
-      content: attr(data-label);
-      position: absolute;
+      content: attr(#{theme.$table-label-attribute});
+      position: theme.$table-label-position;
       left: theme.$table-label-left;
       top: theme.$table-label-top;
-      width: calc(40% - #{theme.$table-cell-padding});
+      width: calc(theme.$table-mobile-label-width - theme.$table-label-padding);
       padding-right: theme.$table-label-padding;
-      font-weight: theme.$table-label-font-weight;
-      text-transform: theme.$table-label-text-transform;
-      text-align: theme.$table-label-align;
-      color: theme.$table-label-color;
+      font-weight: theme.$table-header-font-weight;
     }
 
     &:empty {
-      display: none;
+      display: theme.$table-cell-empty-display;
     }
   }
 }
 
-// Small screen optimizations - Vertical layout
+// Small screen - Vertical layout for labels
 @media (max-width: #{theme.$table-small-breakpoint}) {
   td {
-    padding: theme.$table-mobile-small-padding;
     padding-left: theme.$table-cell-padding;
-    text-align: theme.$table-cell-mobile-small-align;
 
-    // Switch to vertical layout for very small screens
     &::before {
-      position: relative;
-      display: block;
-      left: auto;
-      top: auto;
-      width: 100%;
+      position: theme.$table-small-label-position;
+      display: theme.$table-small-label-display;
+      width: theme.$table-small-label-width;
       margin-bottom: theme.$table-label-margin;
+      font-weight: theme.$table-header-font-weight;
     }
   }
 }

@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@hellajs/core": "^0.0.6",
-    "@hellajs/router": "^0.0.1"
+    "@hellajs/router": "^0.0.1",
+    "@hellajs/store": "^0.0.1",
+    "csstype": "^3.1.3"
   }
 }

@@ -2,13 +2,13 @@
 // Default theme colors - can be overridden
 $colors-default: (
   "background": #ffffff,
-  "text": #333333,
+  "text": oklch(0.129 0.042 264.695),
   "heading": #222222,
   "border": #dddddd,
-  "link": #0066cc,
-  "link-hover": #004499,
+  "link": oklch(0.488 0.243 264.376),
+  "link-hover": oklch(0.424 0.199 265.638),
   "muted": #666666,
-  "accent": #0066cc,
+  "accent": oklch(0.424 0.199 265.638),
   "blockquote-bg": #f9f9f9,
   "code-bg": #f5f5f5,
   "shadow": rgba(0, 0, 0, 0.1),
@@ -19,16 +19,16 @@ $colors: $colors-default !default;
 
 // Dark mode variables
 $colors-dark: (
-  "background": #222222,
+  "background": oklch(0.129 0.042 264.695),
   "text": #eeeeee,
   "heading": #ffffff,
   "border": #444444,
-  "link": #4d9cff,
-  "link-hover": #77b5ff,
+  "link": oklch(0.809 0.105 251.813),
+  "link-hover": oklch(0.707 0.165 254.624),
   "muted": #aaaaaa,
-  "accent": #4d9cff,
-  "blockquote-bg": #333333,
-  "code-bg": #333333,
+  "accent": oklch(0.707 0.165 254.624),
+  "blockquote-bg": oklch(0.208 0.042 265.755),
+  "code-bg": oklch(0.208 0.042 265.755),
 ) !default;
 
 // CSS Variables Generation System

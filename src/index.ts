@@ -1,2 +1,4 @@
-import "./css/main.scss";
-import "./docs/app";
+import "./example";
+import { generateCss } from "./lib";
+
+console.log(generateCss());
