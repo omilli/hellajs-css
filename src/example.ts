@@ -1,5 +1,5 @@
 import type * as CSS from "csstype";
-import { createStyle, createVars, rem } from "./lib";
+import { createStyle, createVars, merge, nest, rem } from "./lib";
 
 // Define text variables
 export const textVars = createVars({
@@ -60,12 +60,6 @@ export const textVars = createVars({
   },
 });
 
-const headingStyles = {
-  margin: `${textVars.space.l} 0 ${textVars.heading.marginBottom}`,
-  overflowWrap: textVars.heading.overflowWrap,
-  lineHeight: textVars.heading.lineHeight,
-};
-
 createStyle({
   foo: {
     fontFamily: textVars.fontFamily,
@@ -79,11 +73,11 @@ createStyle({
     backgroundColor: "var(--color-background)",
     // ".bar": {}
   },
-  "h1,h2,h3,h4,h5,h6": {
+  headings: merge(["h1", "h2", "h3", "h4", "h5", "h6"], {
     margin: `${textVars.space.l} 0 ${textVars.heading.marginBottom}`,
     overflowWrap: textVars.heading.overflowWrap,
     lineHeight: textVars.heading.lineHeight,
-  },
+  }),
   p: {
     fontSize: textVars.paragraph.fontSize,
     lineHeight: textVars.paragraph.lineHeight,
@@ -94,9 +88,13 @@ createStyle({
     color: "var(--color-link)",
     textDecoration: textVars.link.decoration,
     cursor: textVars.link.cursor,
-  },
-  "a:hover, a:focus": {
-    color: "var(--color-link-hover)",
+    state: nest([":hover", ":focus"], {
+      color: "var(--color-link-hover)",
+
+      p: {
+        color: "red",
+      },
+    }),
   },
   "ul, ol": {
     margin: textVars.list.margin,

@@ -1,4 +1,10 @@
-import { FlattenedTheme, StyleConfig, ThemeConfig } from "./types";
+import * as CSS from "csstype";
+import {
+  FlattenedTheme,
+  StyleConfig,
+  StyleConfigValidValues,
+  ThemeConfig,
+} from "./types";
 import { collectCssVars, createCssVars } from "./variables";
 import { styleConfigToCss } from "./css";
 import { collectedStyles } from "./store";
@@ -67,4 +73,54 @@ export function toggleTheme(theme1: string, theme2: string): string {
   const newTheme = activeTheme === theme1 ? theme2 : theme1;
   setActiveTheme(newTheme);
   return newTheme;
+}
+
+/**
+ * Merges an array of selectors with a style object
+ * @param selectors Array of CSS selectors to combine
+ * @param styles Style object to apply to all selectors
+ * @returns An object with the combined selector as key and styles as value
+ */
+export function merge(
+  selectors:
+    | (keyof HTMLElementTagNameMap | CSS.AtRules | CSS.Pseudos)[]
+    | string[],
+  styles: StyleConfigValidValues
+): StyleConfigValidValues {
+  // Join selectors with commas to create a combined selector
+  const combinedSelector = selectors.join(",");
+
+  // Return an object with the combined selector as the only key
+  return {
+    [combinedSelector]: styles,
+  };
+}
+
+/**
+ * Nests selectors by preserving the parent selector context
+ * @param selectors Array of CSS selectors to combine with parents
+ * @param styles Style object to apply to the nested selectors
+ * @returns A special object that will be processed to include parent selectors
+ */
+export function nest(
+  selectors: string[],
+  styles: StyleConfigValidValues
+): StyleConfigValidValues {
+  // Instead of creating separate &:hover and &:focus rules,
+  // create a special flag that will be recognized during CSS generation
+  const result = { __styles: styles };
+
+  // Store the selectors array for use during CSS generation
+  Object.defineProperty(result, "__NESTED_SELECTORS__", {
+    value: selectors,
+    enumerable: false,
+  });
+
+  // Mark this object as a special nested selector group
+  Object.defineProperty(result, "__DIRECT_NEST__", {
+    value: true,
+    enumerable: false,
+  });
+
+  return result;
 }

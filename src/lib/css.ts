@@ -1,6 +1,11 @@
 import { StyleConfig } from "./types";
 import { themeVars, collectedStyles, processDefaultValues } from "./store";
-import { createSelector, isPropertyValue } from "./utils";
+import {
+  createSelector,
+  isPropertyValue,
+  getNestedStyles,
+  getNestedSelectors,
+} from "./utils";
 import {
   generateRootCssVariables,
   generateDarkThemeCssVariables,
@@ -59,10 +64,33 @@ export function styleConfigToCss(
 
   // Process each key in the config
   for (const key in config) {
+    // Skip special properties from the nest function
+    if (key === "__styles") continue;
+
     const value = config[key as keyof StyleConfig];
 
-    if (typeof value === "object" && !isPropertyValue(value)) {
-      // This is a nested selector or at-rule
+    // Check if this value is a special nested selector object
+    const nestedSelectors = getNestedSelectors(value);
+    if (nestedSelectors && parentSelector) {
+      // This is a nested selector (created by nest function)
+      // Get the styles to apply
+      const styles = getNestedStyles(value);
+      if (styles) {
+        // Create combined selectors with the parent - completely ignoring the key
+        const combinedSelectors = nestedSelectors
+          .map((sel) =>
+            sel.startsWith("&")
+              ? parentSelector + sel.substring(1)
+              : `${parentSelector}${sel}`
+          )
+          .join(", ");
+
+        // Process the styles with the combined selector
+        const nestedCss = styleConfigToCss(styles, combinedSelectors);
+        nestedRules.push(nestedCss);
+      }
+    } else if (typeof value === "object" && !isPropertyValue(value)) {
+      // This is a regular nested selector or at-rule
       const selector = createSelector(key, parentSelector);
       const nestedCss = styleConfigToCss(value as StyleConfig, selector);
       nestedRules.push(nestedCss);
