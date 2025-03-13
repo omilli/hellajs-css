@@ -3,17 +3,29 @@ import type * as CSS from "csstype";
 // Common CSS selectors we support - HTML elements, properties, rules, etc
 export type CssSelector =
   | keyof HTMLElementTagNameMap
-  | keyof CSS.StandardLonghandProperties
-  | keyof CSS.VendorLonghandPropertiesHyphen
   | CSS.AtRules
   | CSS.Pseudos
   | "light"
   | "dark";
 
-// The main style config type - this is how users define their styles
-export type StyleConfig = {
-  [key in CssSelector]?: StyleConfig | CSS.Properties;
-};
+// The main style config types - this is how users define their styles
+export type StyleConfigBase =
+  | {
+      [key in keyof HTMLElementTagNameMap | CSS.AtRules]?:
+        | StyleConfigRules
+        | CSS.Properties;
+    }
+  | {
+      [key: string]: StyleConfigRules | CSS.Properties;
+    };
+
+export type StyleConfigRules =
+  | {
+      [key in CssSelector]?: StyleConfigRules | CSS.Properties;
+    }
+  | {
+      [key: string]: StyleConfigRules | CSS.Properties;
+    };
 
 // Basic theme structure that can have light/dark modes
 export interface ThemeConfig {

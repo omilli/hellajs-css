@@ -78,7 +78,7 @@ export function processDefaultValues(): void {
   extractVariableReferences();
 
   // Find frequently used defaults and optimize them
-  for (const [key, data] of Object.entries(defaultValues)) {
+  for (const [_, data] of Object.entries(defaultValues)) {
     if (data.optimized) continue;
 
     for (const [refName, refCount] of Object.entries(data.refCounts)) {
