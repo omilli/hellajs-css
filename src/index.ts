@@ -1,4 +1,4 @@
 import "./example";
-import { generateCss } from "./lib";
+import { css } from "./lib";
 
-console.log(generateCss());
+console.log(css());

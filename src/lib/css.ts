@@ -17,7 +17,7 @@ import {
  * @param includeStyles - Include collected styles in output
  * @returns Complete CSS string with variables and styles
  */
-export function generateCss(includeStyles = true): string {
+export function css(includeStyles = true): string {
   // Prep the CSS
   processDefaultValues();
 
@@ -38,16 +38,6 @@ export function generateCss(includeStyles = true): string {
 
   return cssChunks.join("\n") + "\n";
 }
-
-/**
- * Generates only the collected styles without theme variables
- *
- * @returns CSS string containing only collected styles
- */
-export function generateStyles(): string {
-  return collectedStyles.join("\n\n");
-}
-
 /**
  * Transforms style configuration object into valid CSS
  *
@@ -76,29 +66,41 @@ export function styleConfigToCss(
       // Get the styles to apply
       const styles = getNestedStyles(value);
       if (styles) {
-        // Create combined selectors with the parent - completely ignoring the key
-        const combinedSelectors = nestedSelectors
-          .map((sel) =>
-            sel.startsWith("&")
-              ? parentSelector + sel.substring(1)
-              : `${parentSelector}${sel}`
-          )
-          .join(", ");
+        // For comma-separated parent selectors, we need to distribute each parent to each nested selector
+        const parentParts = parentSelector
+          .split(",")
+          .map((part) => part.trim());
+
+        // Create combined selectors with proper distribution
+        const combinedSelectors = [];
+
+        // Distribute each parent to each nested selector
+        for (const parent of parentParts) {
+          for (const sel of nestedSelectors) {
+            combinedSelectors.push(
+              sel.startsWith("&")
+                ? parent + sel.substring(1)
+                : sel.startsWith(":") || sel.startsWith("::")
+                ? `${parent}${sel}` // No space for pseudo-classes/elements
+                : `${parent} ${sel}` // Space for other selectors
+            );
+          }
+        }
+
+        // Join all combinations with commas
+        const fullSelector = combinedSelectors.join(", ");
 
         // Process the styles with the combined selector
-        const nestedCss = styleConfigToCss(styles, combinedSelectors);
+        const nestedCss = styleConfigToCss(styles, fullSelector);
         nestedRules.push(nestedCss);
       }
     } else if (typeof value === "object" && !isPropertyValue(value)) {
       // This is a regular nested selector or at-rule
-      const selector = createSelector(key, parentSelector);
 
-      // Special handling for comma-separated selectors
-      // When parentSelector contains multiple comma-separated selectors,
-      // and we're adding a nested selector, we need to distribute it to each part
+      // Special handling for comma-separated parent selectors
       if (parentSelector && parentSelector.includes(",")) {
         const parts = parentSelector.split(",").map((part) => part.trim());
-        // Create a new comma-separated selector by combining each parent part with the key
+        // Create a distributed selector
         const distributedSelector = parts
           .map((part) => createSelector(key, part))
           .join(", ");
@@ -109,7 +111,8 @@ export function styleConfigToCss(
         );
         nestedRules.push(nestedCss);
       } else {
-        // Normal case - single parent selector
+        // Standard case - single parent selector
+        const selector = createSelector(key, parentSelector);
         const nestedCss = styleConfigToCss(value as StyleConfig, selector);
         nestedRules.push(nestedCss);
       }

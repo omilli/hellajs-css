@@ -1,8 +1,8 @@
 import type * as CSS from "csstype";
-import { createStyle, createVars, merge, nest, rem } from "./lib";
+import { style, vars, merge, nest, rem } from "./lib";
 
 // Define text variables
-export const textVars = createVars({
+export const textVars = vars({
   htmlFontSize: "100%",
   fontFamily:
     "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Ubuntu, Roboto, Oxygen, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
@@ -60,7 +60,7 @@ export const textVars = createVars({
   },
 });
 
-createStyle({
+style({
   foo: {
     fontFamily: textVars.fontFamily,
   },
@@ -90,10 +90,12 @@ createStyle({
     cursor: textVars.link.cursor,
     state: nest([":hover", ":focus"], {
       color: "var(--color-link-hover)",
-
       p: {
         color: "red",
       },
+      state: nest(["article", "div"], {
+        color: "var(--color-link-hover)",
+      }),
     }),
   },
   "ul, ol": {
