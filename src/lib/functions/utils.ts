@@ -8,10 +8,10 @@
  * @param fallback - Optional fallback value if the variable is not defined
  * @returns {string} CSS var() function
  * @example
- * var_('theme-color') // -> "var(--theme-color)"
- * var_('theme-color', '#fff') // -> "var(--theme-color, #fff)"
+ * cssVar('theme-color') // -> "var(--theme-color)"
+ * cssVar('theme-color', '#fff') // -> "var(--theme-color, #fff)"
  */
-export const var_ = (name: string, fallback?: string): string =>
+export const cssVar = (name: string, fallback?: string): string =>
   fallback ? `var(${name}, ${fallback})` : `var(${name})`;
 
 /**
