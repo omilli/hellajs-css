@@ -1,17 +1,7 @@
 import { themeVars } from "./store";
+import { CssVariableSet } from "./types";
 
-/**
- * Interface for CSS variable structure
- */
-export interface CssVariableSet {
-  variables: string[];
-  css: string;
-}
-
-/**
- * Generate root CSS variables including light theme defaults
- * @returns Formatted CSS string for root variables
- */
+// Spits out the root CSS vars, including light theme defaults
 export function generateRootCssVariables(): CssVariableSet {
   const vars: string[] = [":root {"];
 
@@ -34,10 +24,7 @@ export function generateRootCssVariables(): CssVariableSet {
   };
 }
 
-/**
- * Generate dark theme variables with media query
- * @returns Formatted CSS string for dark theme variables
- */
+// Handles dark theme vars wrapped in a media query
 export function generateDarkThemeCssVariables(): CssVariableSet {
   const vars: string[] = ["@media (prefers-color-scheme: dark) {", "  :root {"];
 
@@ -56,9 +43,7 @@ export function generateDarkThemeCssVariables(): CssVariableSet {
   };
 }
 
-/**
- * Cache for memoization of CSS generation
- */
+// Cache to avoid regenerating CSS we've already built
 export const cssCache = new Map<string, string>();
 
 /**

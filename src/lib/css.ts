@@ -6,22 +6,27 @@ import {
   generateDarkThemeCssVariables,
 } from "./generators";
 
-// Generate CSS from collected variables with theme support
+/**
+ * Generates complete CSS including theme variables and collected styles
+ *
+ * @param includeStyles - Include collected styles in output
+ * @returns Complete CSS string with variables and styles
+ */
 export function generateCss(includeStyles = true): string {
-  // Process default values and optimize CSS before generating
+  // Prep the CSS
   processDefaultValues();
 
   const cssChunks: string[] = [];
 
-  // Generate root variables
+  // Add root vars
   cssChunks.push(generateRootCssVariables().css);
 
-  // Generate dark theme with media query
+  // Add dark theme if we have any dark mode vars
   if (Object.keys(themeVars.dark).length > 0) {
     cssChunks.push(generateDarkThemeCssVariables().css);
   }
 
-  // Include collected styles if requested
+  // Tack on the styles if needed
   if (includeStyles && collectedStyles.length > 0) {
     cssChunks.push(collectedStyles.join("\n\n"));
   }
@@ -29,12 +34,22 @@ export function generateCss(includeStyles = true): string {
   return cssChunks.join("\n") + "\n";
 }
 
-// Export a function that returns only the styles (no variables)
+/**
+ * Generates only the collected styles without theme variables
+ *
+ * @returns CSS string containing only collected styles
+ */
 export function generateStyles(): string {
   return collectedStyles.join("\n\n");
 }
 
-// Convert a style config object to CSS string
+/**
+ * Transforms style configuration object into valid CSS
+ *
+ * @param config - Style configuration object
+ * @param parentSelector - Parent selector for nested rules
+ * @returns Generated CSS string
+ */
 export function styleConfigToCss(
   config: StyleConfig,
   parentSelector = ""
@@ -48,7 +63,7 @@ export function styleConfigToCss(
 
     if (typeof value === "object" && !isPropertyValue(value)) {
       // This is a nested selector or at-rule
-      const selector = createSelector(key as string, parentSelector);
+      const selector = createSelector(key, parentSelector);
       const nestedCss = styleConfigToCss(value as StyleConfig, selector);
       nestedRules.push(nestedCss);
     } else {

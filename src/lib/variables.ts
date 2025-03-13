@@ -4,25 +4,34 @@ import {
   getVarReference,
   processDefaultValues,
 } from "./store";
+import { ThemeMode } from "./types";
 
-// Process CSS variables from theme objects
+/**
+ * Goes through the theme object and builds CSS vars
+ *
+ * @param obj - Source object with variable definitions
+ * @param prefix - Optional prefix for variable names
+ * @param parentKey - Key path for nested properties
+ * @param theme - Current theme context ("light", "dark", or "")
+ * @param isTheme - Whether this is a theme definition (vs component vars)
+ */
 export function collectCssVars(
   obj: any,
   prefix: string = "",
   parentKey: string = "",
   theme: string = "",
-  isTheme: boolean = false // true for createTheme, false for createVars
+  isTheme: boolean = false
 ): void {
   for (const key in obj) {
     const value = obj[key];
-    const isLightOrDark = key === "light" || key === "dark";
+    const isThemeVariant = key === "light" || key === "dark";
 
     // Determine which theme this property belongs to
-    const currentTheme = isLightOrDark ? key : theme;
+    const currentTheme = isThemeVariant ? key : theme;
 
     if (value !== null && typeof value === "object" && !Array.isArray(value)) {
-      if (isLightOrDark) {
-        // When we encounter light/dark, process its children with that theme
+      if (isThemeVariant) {
+        // Process light/dark variants with that theme context
         collectCssVars(value, prefix, parentKey, currentTheme, isTheme);
       } else {
         // For normal objects, maintain hierarchy and pass down any theme context
@@ -32,19 +41,25 @@ export function collectCssVars(
     } else {
       // For leaf values, store with appropriate theme and key structure
       const fullKey = parentKey ? `${parentKey}-${key}` : key;
-      const varName = `--${fullKey}`;
+      const varName = `--${prefix ? `${prefix}-${fullKey}` : fullKey}`;
 
-      // For createTheme: add all vars to root
-      // For createVars: only add light/dark theme vars to root
+      // For createTheme: add all vars to their respective theme
+      // For createVars: only add light/dark theme vars to those themes
       if (isTheme || currentTheme) {
         const targetTheme = currentTheme || "root";
-        themeVars[targetTheme as keyof typeof themeVars][varName] = value;
+        themeVars[targetTheme as ThemeMode][varName] = value;
       }
     }
   }
 }
 
-// Convert JS object structure to CSS variable references
+/**
+ * Takes JS vars and turns them into CSS var references
+ *
+ * @param obj - Source object with variable definitions
+ * @param prefix - Prefix for variable names
+ * @param storage - Target object to store CSS variable references
+ */
 export function convertJsVarsToCss(
   obj: any,
   prefix: string,
@@ -80,13 +95,19 @@ export function convertJsVarsToCss(
   }
 }
 
-// Base function to handle variable creation
+/**
+ * Takes an object and returns CSS vars
+ *
+ * @param args - Variable configuration with optional prefix
+ * @returns Processed variables object with CSS references
+ */
 export function createCssVars<T extends {}>(...args: [string, T] | [T]): T {
   const processedVars = {} as T;
-  const themeName = typeof args[0] === "string" ? args[0] : "";
+  const prefix = typeof args[0] === "string" ? args[0] : "";
   const vars = typeof args[0] === "string" ? args[1] : args[0];
 
-  convertJsVarsToCss(vars, themeName, processedVars);
+  // Convert JS object to CSS variable references
+  convertJsVarsToCss(vars, prefix, processedVars);
 
   // Process default values to determine which ones should move to root
   processDefaultValues();

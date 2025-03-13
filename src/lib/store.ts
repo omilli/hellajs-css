@@ -1,27 +1,21 @@
-// Store for theme variables and styles
+import { DefaultValueEntry, ThemeMode } from "./types";
 
-// Store collected CSS variables by theme
-export const themeVars = {
-  root: {} as Record<string, string>, // Default theme (no prefix)
-  light: {} as Record<string, string>, // Light mode variables
-  dark: {} as Record<string, string>, // Dark mode variables
+/** Theme variable storage by theme mode */
+export const themeVars: Record<ThemeMode, Record<string, string>> = {
+  root: {} /** Base theme variables */,
+  light: {} /** Light theme overrides */,
+  dark: {} /** Dark theme overrides */,
 };
 
-// Track default values used in var() declarations and their usage count
-export const defaultValues: Record<
-  string,
-  {
-    value: string;
-    count: number;
-    refCounts: Record<string, number>; // Track each reference and its usage count
-    optimized: boolean; // Flag to track if this default has been optimized
-  }
-> = {};
+/** Default value tracking storage */
+export const defaultValues: Record<string, DefaultValueEntry> = {};
 
-// Store all collected styles
+/** Collected CSS style storage */
 export const collectedStyles: string[] = [];
 
-// Reset stored variables and styles (useful for testing)
+/**
+ * Resets all stored variables and styles
+ */
 export function resetStore(): void {
   Object.keys(themeVars.root).forEach((key) => delete themeVars.root[key]);
   Object.keys(themeVars.light).forEach((key) => delete themeVars.light[key]);
@@ -30,9 +24,10 @@ export function resetStore(): void {
   collectedStyles.length = 0;
 }
 
-// Add a default value to tracking
+// Keep tabs on default values so we can optimize them later
 export function trackDefaultValue(varRef: string, defaultValue: string): void {
   const key = `${defaultValue}`;
+
   if (!defaultValues[key]) {
     defaultValues[key] = {
       value: defaultValue,
@@ -50,45 +45,42 @@ export function trackDefaultValue(varRef: string, defaultValue: string): void {
   defaultValues[key].count++;
 }
 
-// Parse collected styles and extract variable references with default values
-export function parseCollectedStyles(): void {
+/**
+ * Extract variable references with default values from collected styles
+ */
+export function extractVariableReferences(): void {
   const varPattern = /var\(\s*--([a-zA-Z0-9-]+)\s*,\s*([^)]+)\s*\)/g;
-
-  // Create a new array to hold the processed styles
   const processedStyles: string[] = [];
 
   for (let i = 0; i < collectedStyles.length; i++) {
     const style = collectedStyles[i];
-
-    // Find all variable references with default values
     let match;
+
     while ((match = varPattern.exec(style)) !== null) {
       const varName = match[1];
       const defaultValue = match[2].trim();
-
-      // Track this variable reference
       trackDefaultValue(varName, defaultValue);
     }
 
-    // Add the original style to processed array
     processedStyles.push(style);
   }
 
-  // Clear and replace with processed styles
+  // Replace with processed styles
   collectedStyles.length = 0;
   collectedStyles.push(...processedStyles);
 }
 
-// Process default values and add common ones to root variables
+/**
+ * Process default values and add common ones to root variables
+ */
 export function processDefaultValues(): void {
-  // Process collected styles first to extract any var() usage
-  parseCollectedStyles();
+  // Extract variable references first
+  extractVariableReferences();
 
+  // Find frequently used defaults and optimize them
   for (const [key, data] of Object.entries(defaultValues)) {
-    // Skip already optimized values
     if (data.optimized) continue;
 
-    // Find references used 3+ times with this default value
     for (const [refName, refCount] of Object.entries(data.refCounts)) {
       if (refCount >= 3) {
         // For frequently used values, add to root with the reference name
@@ -99,31 +91,33 @@ export function processDefaultValues(): void {
     }
   }
 
-  // Now process the collected styles and replace with optimized references
-  optimizeCollectedStyles();
+  // Update styles with optimized references
+  optimizeStyles();
 }
 
-// Optimize collected styles by replacing repeated var() references
-export function optimizeCollectedStyles(): void {
+/**
+ * Optimize collected styles by replacing repeated var() references
+ */
+export function optimizeStyles(): void {
   const varPattern = /var\(\s*--([a-zA-Z0-9-]+)\s*,\s*([^)]+)\s*\)/g;
-
-  // Create a new array to hold the optimized styles
   const optimizedStyles: string[] = [];
 
-  for (let i = 0; i < collectedStyles.length; i++) {
-    let style = collectedStyles[i];
+  for (const style of collectedStyles) {
+    let optimizedStyle = style.replace(
+      varPattern,
+      (match, varName, defaultValue) => {
+        const trimmedDefault = defaultValue.trim();
 
-    // Replace var references with optimized versions
-    style = style.replace(varPattern, (match, varName, defaultValue) => {
-      const trimmedDefault = defaultValue.trim();
-      // If this var has been optimized to root, use the simplified reference
-      if (themeVars.root[`--${varName}`] === trimmedDefault) {
-        return `var(--${varName})`;
+        // If this var has been optimized to root, use the simplified reference
+        if (themeVars.root[`--${varName}`] === trimmedDefault) {
+          return `var(--${varName})`;
+        }
+
+        return match; // Keep original if not optimized
       }
-      return match; // Keep original if not optimized
-    });
+    );
 
-    optimizedStyles.push(style);
+    optimizedStyles.push(optimizedStyle);
   }
 
   // Replace with optimized styles
@@ -131,7 +125,9 @@ export function optimizeCollectedStyles(): void {
   collectedStyles.push(...optimizedStyles);
 }
 
-// Get optimized var reference
+/**
+ * Get optimized variable reference
+ */
 export function getVarReference(varRef: string, defaultValue: string): string {
   const key = `${defaultValue}`;
   const data = defaultValues[key];

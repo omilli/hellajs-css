@@ -1,6 +1,5 @@
 import { createStyle, createTheme, createVars } from "./lib";
-import { rgba } from "./lib/functions";
-import { rem } from "./lib/units";
+import { rem, rgba } from "./lib/functions";
 
 // Example usage showing proper types
 const theme = createTheme({

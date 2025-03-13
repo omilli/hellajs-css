@@ -64,9 +64,9 @@ export const maxContent = (): string => "max-content";
 
 export const minContent = (): string => "min-content";
 
-// ===== TRANSFORM FUNCTIONS =====
-export const translate = (x: string, y: string): string =>
-  `translate(${x}, ${y})`;
+// These functions can take a single parameter according to CSS spec:
+export const translate = (x: string, y?: string): string =>
+  y !== undefined ? `translate(${x}, ${y})` : `translate(${x})`;
 
 export const translateX = (x: string): string => `translateX(${x})`;
 
@@ -142,12 +142,18 @@ export const invert = (amount: number): string => `invert(${amount})`;
 
 export const saturate = (amount: number): string => `saturate(${amount})`;
 
+// In CSS, blur radius can be omitted for dropShadow
 export const dropShadow = (
   x: string,
   y: string,
-  blur: string,
-  color: string
-): string => `drop-shadow(${x} ${y} ${blur} ${color})`;
+  blur?: string,
+  color?: string
+): string =>
+  color
+    ? `drop-shadow(${x} ${y} ${blur} ${color})`
+    : blur
+    ? `drop-shadow(${x} ${y} ${blur})`
+    : `drop-shadow(${x} ${y})`;
 
 export const backdropFilter = (filters: string): string =>
   `backdrop-filter(${filters})`;
@@ -249,8 +255,11 @@ export const inset = (
     ? `inset(${top} ${right} ${bottom} ${left} round ${round})`
     : `inset(${top} ${right} ${bottom} ${left})`;
 
-export const polygon = (...points: string[]): string =>
-  `polygon(${points.join(", ")})`;
+// Polygon can take a fillRule as an optional parameter
+export const polygon = (fillRule?: string, ...points: string[]): string =>
+  fillRule && (fillRule === "nonzero" || fillRule === "evenodd")
+    ? `polygon(${fillRule}, ${points.join(", ")})`
+    : `polygon(${points.join(", ")})`;
 
 export const path = (svgPath: string): string => `path('${svgPath}')`;
 
@@ -280,10 +289,9 @@ export const log = (value: number, base?: number): string =>
 export const exp = (value: number): string => `exp(${value})`;
 export const abs = (value: string): string => `abs(${value})`;
 export const sign = (value: string): string => `sign(${value})`;
-export const mod = (value: number, divisor: number): string =>
-  `mod(${value}, ${divisor})`;
-export const rem = (value: number, divisor: number): string =>
-  `rem(${value}, ${divisor})`;
+
+export const mod = (value: number, divisor: number, method?: string): string =>
+  method ? `mod(${value}, ${divisor}, ${method})` : `mod(${value}, ${divisor})`;
 export const round = (value: string, strategy?: string): string =>
   strategy ? `round(${value}, ${strategy})` : `round(${value})`;
 export const floor = (value: string): string => `floor(${value})`;
@@ -376,3 +384,17 @@ export const targetText = (url: string, target?: string): string =>
   target ? `target-text(${url}, ${target})` : `target-text(${url})`;
 export const leader = (style?: string): string =>
   style ? `leader(${style})` : `leader()`;
+
+// ===== UNIT FUNCTIONS =====
+export const rem = (value: number, divisor?: number): string =>
+  divisor ? `rem(${value}, ${divisor})` : `rem(${value})`;
+export const px = (...values: number[]): string =>
+  values.map((value) => `${value}px`).join(" ");
+export const em = (...values: number[]): string =>
+  values.map((value) => `${value}em`).join(" ");
+export const perc = (...values: number[]): string =>
+  values.map((value) => `${value}%`).join(" ");
+export const vh = (...values: number[]): string =>
+  values.map((value) => `${value}vh`).join(" ");
+export const vw = (...values: number[]): string =>
+  values.map((value) => `${value}vw`).join(" ");
