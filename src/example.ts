@@ -79,12 +79,11 @@ createStyle({
     backgroundColor: "var(--color-background)",
     // ".bar": {}
   },
-  h1: headingStyles,
-  h2: headingStyles,
-  h3: headingStyles,
-  h4: headingStyles,
-  h5: headingStyles,
-  h6: headingStyles,
+  "h1,h2,h3,h4,h5,h6": {
+    margin: `${textVars.space.l} 0 ${textVars.heading.marginBottom}`,
+    overflowWrap: textVars.heading.overflowWrap,
+    lineHeight: textVars.heading.lineHeight,
+  },
   p: {
     fontSize: textVars.paragraph.fontSize,
     lineHeight: textVars.paragraph.lineHeight,
@@ -95,26 +94,16 @@ createStyle({
     color: "var(--color-link)",
     textDecoration: textVars.link.decoration,
     cursor: textVars.link.cursor,
-    ":hover": {
-      color: "var(--color-link-hover)",
-    },
-    ":focus": {
-      color: "var(--color-link-hover)",
-    },
   },
-  ul: {
+  "a:hover, a:focus": {
+    color: "var(--color-link-hover)",
+  },
+  "ul, ol": {
     margin: textVars.list.margin,
     paddingLeft: textVars.list.paddingLeft,
-    ul: {
-      margin: textVars.list.nestedMargin,
-    },
   },
-  ol: {
-    margin: textVars.list.margin,
-    paddingLeft: textVars.list.paddingLeft,
-    ol: {
-      margin: textVars.list.nestedMargin,
-    },
+  "ul ul, ol ol": {
+    margin: textVars.list.nestedMargin,
   },
   blockquote: {
     padding: textVars.blockquote.padding,
