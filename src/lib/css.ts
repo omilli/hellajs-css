@@ -92,8 +92,27 @@ export function styleConfigToCss(
     } else if (typeof value === "object" && !isPropertyValue(value)) {
       // This is a regular nested selector or at-rule
       const selector = createSelector(key, parentSelector);
-      const nestedCss = styleConfigToCss(value as StyleConfig, selector);
-      nestedRules.push(nestedCss);
+
+      // Special handling for comma-separated selectors
+      // When parentSelector contains multiple comma-separated selectors,
+      // and we're adding a nested selector, we need to distribute it to each part
+      if (parentSelector && parentSelector.includes(",")) {
+        const parts = parentSelector.split(",").map((part) => part.trim());
+        // Create a new comma-separated selector by combining each parent part with the key
+        const distributedSelector = parts
+          .map((part) => createSelector(key, part))
+          .join(", ");
+
+        const nestedCss = styleConfigToCss(
+          value as StyleConfig,
+          distributedSelector
+        );
+        nestedRules.push(nestedCss);
+      } else {
+        // Normal case - single parent selector
+        const nestedCss = styleConfigToCss(value as StyleConfig, selector);
+        nestedRules.push(nestedCss);
+      }
     } else {
       // This is a CSS property
       properties.push(`  ${key}: ${value};`);
