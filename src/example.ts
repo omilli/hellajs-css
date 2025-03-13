@@ -1,5 +1,23 @@
 import type * as CSS from "csstype";
-import { style, vars, merge, nest, rem } from "./lib";
+import { style, vars, nested, rem, theme } from "./lib";
+
+const appTheme = theme({
+  spacing: {
+    s: rem(1),
+  },
+  light: {
+    colors: {
+      text: "black",
+      background: "white",
+    },
+  },
+  dark: {
+    colors: {
+      text: "white",
+      background: "black",
+    },
+  },
+});
 
 // Define text variables
 export const textVars = vars({
@@ -61,23 +79,23 @@ export const textVars = vars({
 });
 
 style({
-  foo: {
-    fontFamily: textVars.fontFamily,
-  },
   body: {
     fontFamily: textVars.fontFamily,
     lineHeight: textVars.paragraph.lineHeight,
     WebkitFontSmoothing: "antialiased",
     margin: 0,
-    color: "var(--color-text)",
-    backgroundColor: "var(--color-background)",
-    // ".bar": {}
+    color: appTheme.colors.text,
+    backgroundColor: appTheme.colors.background,
   },
-  headings: merge(["h1", "h2", "h3", "h4", "h5", "h6"], {
-    margin: `${textVars.space.l} 0 ${textVars.heading.marginBottom}`,
-    overflowWrap: textVars.heading.overflowWrap,
-    lineHeight: textVars.heading.lineHeight,
-  }),
+});
+
+style(["h1", "h2", "h3", "h4", "h5", "h6"], {
+  margin: `${textVars.space.l} 0 ${textVars.heading.marginBottom}`,
+  overflowWrap: textVars.heading.overflowWrap,
+  lineHeight: textVars.heading.lineHeight,
+});
+
+style({
   p: {
     fontSize: textVars.paragraph.fontSize,
     lineHeight: textVars.paragraph.lineHeight,
@@ -88,42 +106,41 @@ style({
     color: "var(--color-link)",
     textDecoration: textVars.link.decoration,
     cursor: textVars.link.cursor,
-    state: nest([":hover", ":focus"], {
+    states: nested([":hover", ":focus"], {
       color: "var(--color-link-hover)",
-      p: {
-        color: "red",
-      },
-      state: nest(["article", "div"], {
-        color: "var(--color-link-hover)",
-      }),
     }),
   },
-  "ul, ol": {
-    margin: textVars.list.margin,
-    paddingLeft: textVars.list.paddingLeft,
-  },
-  "ul ul, ol ol": {
-    margin: textVars.list.nestedMargin,
-  },
+});
+
+style(["ul", "ol"], {
+  margin: textVars.list.margin,
+  paddingLeft: textVars.list.paddingLeft,
+});
+
+style(["ul ul", "ol ol"], {
+  margin: textVars.list.nestedMargin,
+});
+
+style({
   blockquote: {
     padding: textVars.blockquote.padding,
     margin: textVars.blockquote.margin,
-    background: "var(--color-blockquote-bg)",
+    background: appTheme.colors.background,
   },
   code: {
     fontFamily: textVars.codeFontFamily,
     fontSize: textVars.code.fontSize,
     padding: textVars.code.padding,
-    background: "var(--color-code-bg)",
+    background: appTheme.colors.background,
   },
   pre: {
     overflow: "auto",
     padding: textVars.pre.padding,
-    background: "var(--color-code-bg)",
+    background: appTheme.colors.background,
   },
   hr: {
     border: 0,
-    borderTop: `${textVars.hr.borderWidth} solid var(--color-border)`,
+    borderTop: `${textVars.hr.borderWidth} solid ${appTheme.colors.text}`,
     margin: textVars.hr.margin,
   },
 });

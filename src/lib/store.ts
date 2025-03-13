@@ -14,7 +14,7 @@ export const defaultValues: Record<string, DefaultValueEntry> = {};
 export const collectedStyles: string[] = [];
 
 /**
- * Resets all stored variables and styles
+ * Reset the store to initial state
  */
 export function resetStore(): void {
   Object.keys(themeVars.root).forEach((key) => delete themeVars.root[key]);
@@ -24,7 +24,12 @@ export function resetStore(): void {
   collectedStyles.length = 0;
 }
 
-// Keep tabs on default values so we can optimize them later
+/**
+ * Tracks the usage of a default value by a specific reference.
+ *
+ * @param varRef - The reference to track.
+ * @param defaultValue - The default value to track.
+ */
 export function trackDefaultValue(varRef: string, defaultValue: string): void {
   const key = `${defaultValue}`;
 
@@ -46,7 +51,7 @@ export function trackDefaultValue(varRef: string, defaultValue: string): void {
 }
 
 /**
- * Extract variable references with default values from collected styles
+ * Extracts CSS variable references from the collected styles and tracks their default values.
  */
 export function extractVariableReferences(): void {
   const varPattern = /var\(\s*--([a-zA-Z0-9-]+)\s*,\s*([^)]+)\s*\)/g;
@@ -71,7 +76,8 @@ export function extractVariableReferences(): void {
 }
 
 /**
- * Process default values and add common ones to root variables
+ * Processes default values by extracting variable references,
+ * optimizing frequently used defaults, and updating styles.
  */
 export function processDefaultValues(): void {
   // Extract variable references first
@@ -126,7 +132,11 @@ export function optimizeStyles(): void {
 }
 
 /**
- * Get optimized variable reference
+ * Retrieves a CSS variable reference, optimizing its usage if necessary.
+ *
+ * @param varRef - The name of the CSS variable to reference.
+ * @param defaultValue - The default value to use if the variable is not defined.
+ * @returns A string representing the CSS variable reference.
  */
 export function getVarReference(varRef: string, defaultValue: string): string {
   const key = `${defaultValue}`;

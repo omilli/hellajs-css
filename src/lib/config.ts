@@ -1,44 +1,6 @@
+import { getNestedSelectors, getNestedStyles } from "./nesting";
 import { StyleConfig } from "./types";
-import { themeVars, collectedStyles, processDefaultValues } from "./store";
-import {
-  createSelector,
-  isPropertyValue,
-  getNestedStyles,
-  getNestedSelectors,
-  toKebabCase,
-} from "./utils";
-import {
-  generateRootCssVariables,
-  generateDarkThemeCssVariables,
-} from "./generators";
-
-/**
- * Generates complete CSS including theme variables and collected styles
- *
- * @param includeStyles - Include collected styles in output
- * @returns Complete CSS string with variables and styles
- */
-export function css(includeStyles = true): string {
-  // Prep the CSS
-  processDefaultValues();
-
-  const cssChunks: string[] = [];
-
-  // Add root vars
-  cssChunks.push(generateRootCssVariables().css);
-
-  // Add dark theme if we have any dark mode vars
-  if (Object.keys(themeVars.dark).length > 0) {
-    cssChunks.push(generateDarkThemeCssVariables().css);
-  }
-
-  // Tack on the styles if needed
-  if (includeStyles && collectedStyles.length > 0) {
-    cssChunks.push(collectedStyles.join("\n\n"));
-  }
-
-  return cssChunks.join("\n") + "\n";
-}
+import { createSelector, isPropertyValue, toKebabCase } from "./utils";
 /**
  * Transforms style configuration object into valid CSS
  *
@@ -46,7 +8,7 @@ export function css(includeStyles = true): string {
  * @param parentSelector - Parent selector for nested rules
  * @returns Generated CSS string
  */
-export function styleConfigToCss(
+export function convertConfigToCss(
   config: StyleConfig,
   parentSelector = ""
 ): string {
@@ -92,7 +54,7 @@ export function styleConfigToCss(
         const fullSelector = combinedSelectors.join(", ");
 
         // Process the styles with the combined selector
-        const nestedCss = styleConfigToCss(styles, fullSelector);
+        const nestedCss = convertConfigToCss(styles, fullSelector);
         nestedRules.push(nestedCss);
       }
     } else if (typeof value === "object" && !isPropertyValue(value)) {
@@ -106,7 +68,7 @@ export function styleConfigToCss(
           .map((part) => createSelector(key, part))
           .join(", ");
 
-        const nestedCss = styleConfigToCss(
+        const nestedCss = convertConfigToCss(
           value as StyleConfig,
           distributedSelector
         );
@@ -114,7 +76,7 @@ export function styleConfigToCss(
       } else {
         // Standard case - single parent selector
         const selector = createSelector(key, parentSelector);
-        const nestedCss = styleConfigToCss(value as StyleConfig, selector);
+        const nestedCss = convertConfigToCss(value as StyleConfig, selector);
         nestedRules.push(nestedCss);
       }
     } else {

@@ -6,14 +6,17 @@ import {
   ThemeConfig,
 } from "./types";
 import { collectCssVars, createCssVars } from "./variables";
-import { styleConfigToCss } from "./css";
-import { collectedStyles } from "./store";
+import { convertConfigToCss } from "./config";
+import { themeVars, collectedStyles, processDefaultValues } from "./store";
+import {
+  generateRootCssVariables,
+  generateDarkThemeCssVariables,
+} from "./generate";
 
 // Regular exports
 export * from "./types";
 export * from "./functions";
-export { css } from "./css";
-export { clearCssCache } from "./generators";
+export { clearCssCache } from "./cache";
 
 /**
  * Applies a theme configuration and collects CSS variables for the specified theme.
@@ -55,13 +58,36 @@ export function vars<T extends Record<string, any>>(
 
 /**
  * Converts the provided style configuration to CSS and adds it to the collection of styles.
+ * Can be called with either a style config object or an array of selectors and a styles object.
  *
- * @param {StyleConfig} config - The style configuration to be converted to CSS.
- * @returns {StyleConfig} The original style configuration.
+ * @param {StyleConfig | (string[] | (keyof HTMLElementTagNameMap | CSS.AtRules | CSS.Pseudos)[])} configOrSelectors - Style config or array of selectors
+ * @param {StyleConfigValidValues} [styles] - Style object when using array of selectors
+ * @returns {StyleConfig} The resulting style configuration
  */
-export function style(config: StyleConfig): StyleConfig {
+export function style(
+  configOrSelectors:
+    | StyleConfig
+    | (string[] | (keyof HTMLElementTagNameMap | CSS.AtRules | CSS.Pseudos)[]),
+  styles?: StyleConfigValidValues
+): StyleConfig {
+  let config: StyleConfig;
+
+  // Check if the first argument is an array (selectors)
+  if (Array.isArray(configOrSelectors) && styles) {
+    // Create a combined selector string
+    const combinedSelector = configOrSelectors.join(",");
+
+    // Build the config object with combined selector
+    config = {
+      [combinedSelector]: styles,
+    };
+  } else {
+    // Handle as normal style config
+    config = configOrSelectors as StyleConfig;
+  }
+
   // Convert the style config to CSS
-  const css = styleConfigToCss(config, "");
+  const css = convertConfigToCss(config, "");
 
   // Add to collection
   if (css) {
@@ -72,33 +98,12 @@ export function style(config: StyleConfig): StyleConfig {
 }
 
 /**
- * Merges an array of selectors with a style object
- * @param selectors Array of CSS selectors to combine
- * @param styles Style object to apply to all selectors
- * @returns An object with the combined selector as key and styles as value
- */
-export function merge(
-  selectors:
-    | (keyof HTMLElementTagNameMap | CSS.AtRules | CSS.Pseudos)[]
-    | string[],
-  styles: StyleConfigValidValues
-): StyleConfigValidValues {
-  // Join selectors with commas to create a combined selector
-  const combinedSelector = selectors.join(",");
-
-  // Return an object with the combined selector as the only key
-  return {
-    [combinedSelector]: styles,
-  };
-}
-
-/**
  * Nests selectors by preserving the parent selector context
  * @param selectors Array of CSS selectors to combine with parents
  * @param styles Style object to apply to the nested selectors
  * @returns A special object that will be processed to include parent selectors
  */
-export function nest(
+export function nested(
   selectors: string[],
   styles: StyleConfigValidValues
 ): StyleConfigValidValues {
@@ -121,41 +126,30 @@ export function nest(
   return result;
 }
 
-// Current active theme state
-let activeTheme: string = "light";
-
 /**
- * Sets the active theme for the application.
+ * Generates complete CSS including theme variables and collected styles
  *
- * This function updates the `data-theme` attribute on the document's root element
- * to the specified theme and sets the `activeTheme` variable to the new theme.
- *
- * @param theme - The name of the theme to set as active.
+ * @param includeStyles - Include collected styles in output
+ * @returns Complete CSS string with variables and styles
  */
-export function setActiveTheme(theme: string): void {
-  document.documentElement.setAttribute("data-theme", theme);
-  activeTheme = theme;
-}
+export function css(includeStyles = true): string {
+  // Prep the CSS
+  processDefaultValues();
 
-/**
- * Retrieves the currently active theme.
- *
- * @returns {string} The name of the active theme.
- */
-export function getActiveTheme(): string {
-  return activeTheme;
-}
+  const cssChunks: string[] = [];
 
-// Toggle between two themes
-/**
- * Toggles between two themes and sets the active theme to the new theme.
- *
- * @param theme1 - The first theme option.
- * @param theme2 - The second theme option.
- * @returns The new active theme after toggling.
- */
-export function toggleTheme(theme1: string, theme2: string): string {
-  const newTheme = activeTheme === theme1 ? theme2 : theme1;
-  setActiveTheme(newTheme);
-  return newTheme;
+  // Add root vars
+  cssChunks.push(generateRootCssVariables().css);
+
+  // Add dark theme if we have any dark mode vars
+  if (Object.keys(themeVars.dark).length > 0) {
+    cssChunks.push(generateDarkThemeCssVariables().css);
+  }
+
+  // Tack on the styles if needed
+  if (includeStyles && collectedStyles.length > 0) {
+    cssChunks.push(collectedStyles.join("\n\n"));
+  }
+
+  return cssChunks.join("\n") + "\n";
 }

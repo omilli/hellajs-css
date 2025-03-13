@@ -1,7 +1,14 @@
+import { cache } from "./cache";
 import { themeVars } from "./store";
 import { CSSVariableSet } from "./types";
 
-// Spits out the root CSS vars, including light theme defaults
+/**
+ * Generates a set of CSS variables for the root element, including both regular root variables
+ * and light theme variables as defaults.
+ *
+ * @returns An object containing the generated CSS variables as an array of strings
+ * and the concatenated CSS string.
+ */
 export function generateRootCssVariables(): CSSVariableSet {
   const vars: string[] = [":root {"];
 
@@ -24,7 +31,12 @@ export function generateRootCssVariables(): CSSVariableSet {
   };
 }
 
-// Handles dark theme vars wrapped in a media query
+/**
+ * Generates a set of CSS variables for the dark theme.
+ *
+ * @returns An object containing the generated CSS variables as an array of strings
+ * and the concatenated CSS string.
+ */
 export function generateDarkThemeCssVariables(): CSSVariableSet {
   const vars: string[] = ["@media (prefers-color-scheme: dark) {", "  :root {"];
 
@@ -43,51 +55,19 @@ export function generateDarkThemeCssVariables(): CSSVariableSet {
   };
 }
 
-// Cache to avoid regenerating CSS we've already built
-export const cssCache = new Map<string, string>();
-
 /**
- * Store CSS in cache with optional metadata
- */
-export function setCssCache(
-  key: string,
-  css: string,
-  metadata: string = ""
-): void {
-  cssCache.set(key, metadata ? `${css}<!--${metadata}-->` : css);
-}
-
-/**
- * Get CSS from cache
- */
-export function getCssCache(key: string): string | undefined {
-  const value = cssCache.get(key);
-  return value?.split("<!--")[0]; // Remove metadata if present
-}
-
-/**
- * Generate a unique cache key for style config
- */
-export function generateCacheKey(obj: object): string {
-  return JSON.stringify(obj);
-}
-
-/**
- * Check if CSS needs to be regenerated
+ * Determines whether the CSS for a given cache key should be regenerated.
+ *
+ * @param cacheKey - The cache key to check.
+ * @param includeStyles - Whether to consider styles in the check.
+ * @returns Whether the CSS should be regenerated.
  */
 export function shouldRegenerateCSS(
   cacheKey: string,
   includeStyles: boolean = true
 ): boolean {
   return Boolean(
-    !cssCache.has(cacheKey) ||
-      (includeStyles && cssCache.get(cacheKey)?.includes("NEEDS_STYLES"))
+    !cache.has(cacheKey) ||
+      (includeStyles && cache.get(cacheKey)?.includes("NEEDS_STYLES"))
   );
-}
-
-/**
- * Clear the CSS generator cache
- */
-export function clearCssCache(): void {
-  cssCache.clear();
 }

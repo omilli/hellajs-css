@@ -77,13 +77,14 @@ export const minContent = (): string => "min-content";
 /**
  * Converts pixels to rem units
  * @param value - The pixel value to convert
- * @param divisor - Optional divisor (default is typically 16)
+ * @param divisor - Optional divisor
  * @returns CSS rem value string
  * @example
- * rem(16) // -> "1rem"
+ * rem(1) // -> "1rem"
+ * rem(1, 2) // -> "0.5rem"
  */
 export const rem = (value: number, divisor?: number): string =>
-  divisor ? `${value / divisor}rem` : `${value / 16}rem`;
+  divisor ? `rem(${value}, ${divisor})` : `${value}rem`;
 
 /**
  * Creates pixel unit values
