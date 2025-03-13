@@ -1,8 +1,8 @@
 import { themeVars } from "./store";
-import { CssVariableSet } from "./types";
+import { CSSVariableSet } from "./types";
 
 // Spits out the root CSS vars, including light theme defaults
-export function generateRootCssVariables(): CssVariableSet {
+export function generateRootCssVariables(): CSSVariableSet {
   const vars: string[] = [":root {"];
 
   // Add regular root variables
@@ -25,7 +25,7 @@ export function generateRootCssVariables(): CssVariableSet {
 }
 
 // Handles dark theme vars wrapped in a media query
-export function generateDarkThemeCssVariables(): CssVariableSet {
+export function generateDarkThemeCssVariables(): CSSVariableSet {
   const vars: string[] = ["@media (prefers-color-scheme: dark) {", "  :root {"];
 
   for (const [varName, value] of Object.entries(themeVars.dark)) {
