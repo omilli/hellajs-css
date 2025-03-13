@@ -2,7 +2,7 @@
 
 A type-safe CSS-in-JS library with optimized theming and zero runtime overhead.
 
-## Featuress
+## Features
 
 - **Zero runtime overhead** - All CSS is generated at build time
 - **Type-safe styling** with full TypeScript support and autocompletion
