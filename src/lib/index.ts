@@ -1,4 +1,4 @@
-import { FlattenedTheme, StyleConfigBase, ThemeConfig } from "./types";
+import { FlattenedTheme, StyleConfig, ThemeConfig } from "./types";
 import { collectCssVars, createCssVars } from "./variables";
 import { styleConfigToCss } from "./css";
 import { collectedStyles } from "./store";
@@ -36,7 +36,7 @@ export function createVars<T extends Record<string, any>>(
 }
 
 // Creates CSS styles from a style configuration object
-export function createStyle(config: StyleConfigBase): StyleConfigBase {
+export function createStyle(config: StyleConfig): StyleConfig {
   // Convert the style config to CSS
   const css = styleConfigToCss(config, "");
 

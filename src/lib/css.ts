@@ -1,4 +1,4 @@
-import { StyleConfigBase } from "./types";
+import { StyleConfig } from "./types";
 import { themeVars, collectedStyles, processDefaultValues } from "./store";
 import { createSelector, isPropertyValue } from "./utils";
 import {
@@ -51,7 +51,7 @@ export function generateStyles(): string {
  * @returns Generated CSS string
  */
 export function styleConfigToCss(
-  config: StyleConfigBase,
+  config: StyleConfig,
   parentSelector = ""
 ): string {
   const properties: string[] = [];
@@ -59,12 +59,12 @@ export function styleConfigToCss(
 
   // Process each key in the config
   for (const key in config) {
-    const value = config[key as keyof StyleConfigBase];
+    const value = config[key as keyof StyleConfig];
 
     if (typeof value === "object" && !isPropertyValue(value)) {
       // This is a nested selector or at-rule
       const selector = createSelector(key, parentSelector);
-      const nestedCss = styleConfigToCss(value as StyleConfigBase, selector);
+      const nestedCss = styleConfigToCss(value as StyleConfig, selector);
       nestedRules.push(nestedCss);
     } else {
       // This is a CSS property

@@ -9,23 +9,25 @@ export type CssSelector =
   | "dark";
 
 // The main style config types - this is how users define their styles
-export type StyleConfigBase =
-  | {
-      [key in keyof HTMLElementTagNameMap | CSS.AtRules]?:
-        | StyleConfigRules
-        | CSS.Properties;
-    }
-  | {
-      [key: string]: StyleConfigRules | CSS.Properties;
-    };
+export type StyleConfig = StyleConfigBase | StyleConifigGeneric;
 
-export type StyleConfigRules =
-  | {
-      [key in CssSelector]?: StyleConfigRules | CSS.Properties;
-    }
-  | {
-      [key: string]: StyleConfigRules | CSS.Properties;
-    };
+export type StyleConfigBase = {
+  [key in keyof HTMLElementTagNameMap | CSS.AtRules]?:
+    | StyleConfigRules
+    | CSS.Properties;
+};
+
+export type StyleConifigGeneric = {
+  [key: string]: StyleConfigValidValues;
+};
+
+export type StyleConfigRules = StyleConfigTypedRules | StyleConifigGeneric;
+
+export type StyleConfigTypedRules = {
+  [key in CssSelector]?: StyleConfigValidValues;
+};
+
+export type StyleConfigValidValues = StyleConfigRules | CSS.Properties;
 
 // Basic theme structure that can have light/dark modes
 export interface ThemeConfig {
