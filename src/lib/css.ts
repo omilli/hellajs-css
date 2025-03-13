@@ -5,6 +5,7 @@ import {
   isPropertyValue,
   getNestedStyles,
   getNestedSelectors,
+  toKebabCase,
 } from "./utils";
 import {
   generateRootCssVariables,
@@ -117,8 +118,9 @@ export function styleConfigToCss(
         nestedRules.push(nestedCss);
       }
     } else {
-      // This is a CSS property
-      properties.push(`  ${key}: ${value};`);
+      // This is a CSS property - convert camelCase to kebab-case
+      const kebabKey = toKebabCase(key);
+      properties.push(`  ${kebabKey}: ${value};`);
     }
   }
 

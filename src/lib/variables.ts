@@ -5,6 +5,7 @@ import {
   processDefaultValues,
 } from "./store";
 import { ThemeMode } from "./types";
+import { toKebabCase } from "./utils";
 
 /**
  * Goes through the theme object and builds CSS vars
@@ -35,12 +36,16 @@ export function collectCssVars(
         collectCssVars(value, prefix, parentKey, currentTheme, isTheme);
       } else {
         // For normal objects, maintain hierarchy and pass down any theme context
-        const newParentKey = parentKey ? `${parentKey}-${key}` : key;
+        // Convert key to kebab-case for CSS variables
+        const kebabKey = toKebabCase(key);
+        const newParentKey = parentKey ? `${parentKey}-${kebabKey}` : kebabKey;
         collectCssVars(value, prefix, newParentKey, currentTheme, isTheme);
       }
     } else {
       // For leaf values, store with appropriate theme and key structure
-      const fullKey = parentKey ? `${parentKey}-${key}` : key;
+      // Convert key to kebab-case for CSS variables
+      const kebabKey = toKebabCase(key);
+      const fullKey = parentKey ? `${parentKey}-${kebabKey}` : kebabKey;
       const varName = `--${prefix ? `${prefix}-${fullKey}` : fullKey}`;
 
       // For createTheme: add all vars to their respective theme
@@ -74,7 +79,8 @@ export function convertJsVarsToCss(
     }
 
     const value = obj[key];
-    const newPrefix = prefix ? `${prefix}-${key}` : key;
+    const kebabKey = toKebabCase(key);
+    const newPrefix = prefix ? `${prefix}-${kebabKey}` : kebabKey;
 
     if (value !== null && typeof value === "object" && !Array.isArray(value)) {
       // Create nested structure in the output object (omitting light/dark)
@@ -83,8 +89,8 @@ export function convertJsVarsToCss(
       convertJsVarsToCss(value, newPrefix, storage[key]);
     } else {
       // Set variable reference, ensuring it points to the right CSS var
-      // Remove any theme prefix from the variable reference
-      const varReference = newPrefix.replace(/^(light|dark)-/, "");
+      // Remove any theme prefix from the variable reference and ensure kebab case
+      let varReference = newPrefix.replace(/^(light|dark)-/, "");
 
       // Track the default value for potential optimization
       trackDefaultValue(varReference, value);

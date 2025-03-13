@@ -3,6 +3,22 @@
  */
 
 /**
+ * Converts camelCase string to kebab-case (CSS style naming)
+ *
+ * @param str - camelCase string to convert
+ * @returns Kebab-case string with hyphens
+ */
+export function toKebabCase(str: string): string {
+  // Handle vendor prefixes (e.g. WebkitTransform -> -webkit-transform)
+  if (/^[A-Z]/.test(str)) {
+    const vendor = str.charAt(0).toLowerCase() + str.slice(1);
+    return "-" + vendor.replace(/([A-Z])/g, "-$1").toLowerCase();
+  }
+  // Regular camelCase to kebab conversion
+  return str.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+/**
  * Checks if something is a CSS prop value or nested rule
  *
  * @param value - Value to check
