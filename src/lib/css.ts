@@ -1,17 +1,24 @@
 import { StyleConfig } from "./types";
-import { themeVars, collectedStyles } from "./store";
+import { themeVars, collectedStyles, processDefaultValues } from "./store";
 import { createSelector, isPropertyValue } from "./utils";
+import {
+  generateRootCssVariables,
+  generateDarkThemeCssVariables,
+} from "./generators";
 
 // Generate CSS from collected variables with theme support
 export function generateCss(includeStyles = true): string {
+  // Process default values and optimize CSS before generating
+  processDefaultValues();
+
   const cssChunks: string[] = [];
 
   // Generate root variables
-  cssChunks.push(generateRootVariables());
+  cssChunks.push(generateRootCssVariables().css);
 
   // Generate dark theme with media query
   if (Object.keys(themeVars.dark).length > 0) {
-    cssChunks.push(generateDarkThemeVariables());
+    cssChunks.push(generateDarkThemeCssVariables().css);
   }
 
   // Include collected styles if requested
@@ -25,42 +32,6 @@ export function generateCss(includeStyles = true): string {
 // Export a function that returns only the styles (no variables)
 export function generateStyles(): string {
   return collectedStyles.join("\n\n");
-}
-
-// Generate root variables including light theme defaults
-function generateRootVariables(): string {
-  const vars: string[] = [":root {"];
-
-  // Add regular root variables
-  for (const [varName, value] of Object.entries(themeVars.root)) {
-    vars.push(`  ${varName}: ${value};`);
-  }
-
-  // Add light theme variables as defaults
-  for (const [varName, value] of Object.entries(themeVars.light)) {
-    // Use the variable name without the theme prefix
-    const normalizedVarName = varName.replace(/^--light-/, "--");
-    vars.push(`  ${normalizedVarName}: ${value};`);
-  }
-  vars.push("}\n");
-
-  return vars.join("\n");
-}
-
-// Generate dark theme variables with media query
-function generateDarkThemeVariables(): string {
-  const vars: string[] = ["@media (prefers-color-scheme: dark) {", "  :root {"];
-
-  for (const [varName, value] of Object.entries(themeVars.dark)) {
-    // Use the variable name without the theme prefix
-    const normalizedVarName = varName.replace(/^--dark-/, "--");
-    vars.push(`    ${normalizedVarName}: ${value};`);
-  }
-
-  vars.push("  }");
-  vars.push("}\n");
-
-  return vars.join("\n");
 }
 
 // Convert a style config object to CSS string

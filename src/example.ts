@@ -29,11 +29,14 @@ const table = createVars("table", {
 
 createStyle({
   table: {
-    color: table.text.color,
+    tr: {
+      color: table.text.color,
+    },
     th: {
-      td: {
-        color: table.text.color,
-      },
+      color: table.text.color,
+    },
+    td: {
+      color: table.text.color,
     },
   },
 });

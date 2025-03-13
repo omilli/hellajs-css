@@ -10,7 +10,12 @@ export const themeVars = {
 // Track default values used in var() declarations and their usage count
 export const defaultValues: Record<
   string,
-  { value: string; count: number; varName?: string }
+  {
+    value: string;
+    count: number;
+    refCounts: Record<string, number>; // Track each reference and its usage count
+    optimized: boolean; // Flag to track if this default has been optimized
+  }
 > = {};
 
 // Store all collected styles
@@ -29,39 +34,101 @@ export function resetStore(): void {
 export function trackDefaultValue(varRef: string, defaultValue: string): void {
   const key = `${defaultValue}`;
   if (!defaultValues[key]) {
-    defaultValues[key] = { value: defaultValue, count: 0 };
+    defaultValues[key] = {
+      value: defaultValue,
+      count: 0,
+      refCounts: {},
+      optimized: false,
+    };
   }
-  defaultValues[key].count++;
 
-  // Associate this variable reference with the default value
-  // Use component prefix from varRef when available
-  if (!defaultValues[key].varName) {
-    // Extract component name from the variable reference (e.g., "table" from "table-text-color")
-    const componentPrefix = varRef.split("-")[0];
-    defaultValues[key].varName = `--${componentPrefix}-default-${key.replace(
-      /[^a-zA-Z0-9-]/g,
-      "-"
-    )}`;
+  // Track this specific reference
+  if (!defaultValues[key].refCounts[varRef]) {
+    defaultValues[key].refCounts[varRef] = 0;
   }
+  defaultValues[key].refCounts[varRef]++;
+  defaultValues[key].count++;
 }
 
-// Process default values and add common ones to root
-export function processDefaultValues(
-  countThreshold: number = 3,
-  lengthThreshold: number = 15
-): void {
+// Parse collected styles and extract variable references with default values
+export function parseCollectedStyles(): void {
+  const varPattern = /var\(\s*--([a-zA-Z0-9-]+)\s*,\s*([^)]+)\s*\)/g;
+
+  // Create a new array to hold the processed styles
+  const processedStyles: string[] = [];
+
+  for (let i = 0; i < collectedStyles.length; i++) {
+    const style = collectedStyles[i];
+
+    // Find all variable references with default values
+    let match;
+    while ((match = varPattern.exec(style)) !== null) {
+      const varName = match[1];
+      const defaultValue = match[2].trim();
+
+      // Track this variable reference
+      trackDefaultValue(varName, defaultValue);
+    }
+
+    // Add the original style to processed array
+    processedStyles.push(style);
+  }
+
+  // Clear and replace with processed styles
+  collectedStyles.length = 0;
+  collectedStyles.push(...processedStyles);
+}
+
+// Process default values and add common ones to root variables
+export function processDefaultValues(): void {
+  // Process collected styles first to extract any var() usage
+  parseCollectedStyles();
+
   for (const [key, data] of Object.entries(defaultValues)) {
-    // Optimize if:
-    // 1. Used multiple times (exceeds count threshold) OR
-    // 2. Complex value (exceeds length threshold) used at least twice
-    if (
-      data.count >= countThreshold ||
-      (data.value.length >= lengthThreshold && data.count >= 2)
-    ) {
-      // Add to root variables
-      themeVars.root[data.varName!] = data.value;
+    // Skip already optimized values
+    if (data.optimized) continue;
+
+    // Find references used 3+ times with this default value
+    for (const [refName, refCount] of Object.entries(data.refCounts)) {
+      if (refCount >= 3) {
+        // For frequently used values, add to root with the reference name
+        themeVars.root[`--${refName}`] = data.value;
+        data.optimized = true;
+        break;
+      }
     }
   }
+
+  // Now process the collected styles and replace with optimized references
+  optimizeCollectedStyles();
+}
+
+// Optimize collected styles by replacing repeated var() references
+export function optimizeCollectedStyles(): void {
+  const varPattern = /var\(\s*--([a-zA-Z0-9-]+)\s*,\s*([^)]+)\s*\)/g;
+
+  // Create a new array to hold the optimized styles
+  const optimizedStyles: string[] = [];
+
+  for (let i = 0; i < collectedStyles.length; i++) {
+    let style = collectedStyles[i];
+
+    // Replace var references with optimized versions
+    style = style.replace(varPattern, (match, varName, defaultValue) => {
+      const trimmedDefault = defaultValue.trim();
+      // If this var has been optimized to root, use the simplified reference
+      if (themeVars.root[`--${varName}`] === trimmedDefault) {
+        return `var(--${varName})`;
+      }
+      return match; // Keep original if not optimized
+    });
+
+    optimizedStyles.push(style);
+  }
+
+  // Replace with optimized styles
+  collectedStyles.length = 0;
+  collectedStyles.push(...optimizedStyles);
 }
 
 // Get optimized var reference
@@ -69,15 +136,17 @@ export function getVarReference(varRef: string, defaultValue: string): string {
   const key = `${defaultValue}`;
   const data = defaultValues[key];
 
-  // Use root variable reference if this value was optimized
-  // Check either count threshold or (length threshold and count >= 2)
-  if (
-    data &&
-    (data.count >= 3 || (defaultValue.length >= 15 && data.count >= 2)) &&
-    data.varName
-  ) {
-    // For optimized values, reference the root variable
-    return `var(--${varRef}, var(${data.varName}))`;
+  // If the variable exists in root, use direct reference
+  if (themeVars.root[`--${varRef}`] !== undefined) {
+    return `var(--${varRef})`;
+  }
+
+  // Check if this reference is used enough times to justify optimization
+  if (data && data.refCounts[varRef] >= 3) {
+    // Add to root and mark as optimized
+    themeVars.root[`--${varRef}`] = defaultValue;
+    data.optimized = true;
+    return `var(--${varRef})`;
   }
 
   // Otherwise use inline default
