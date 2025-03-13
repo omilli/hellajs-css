@@ -31,6 +31,31 @@ export function getCssCache(key: string): string | undefined {
 }
 
 /**
+ * Optimizes CSS by combining identical rules and caches the result.
+ *
+ * @param key - The key to identify the cached CSS.
+ * @param css - The CSS content to optimize and cache.
+ * @param [metadata=""] - Optional metadata to be included as an HTML comment.
+ * @returns The optimized CSS content.
+ */
+export function optimizeAndCacheCSS(
+  key: string,
+  css: string,
+  metadata: string = ""
+): string {
+  // Import here to avoid circular dependency
+  const { combineIdenticalRules } = require("./utils");
+
+  // Optimize the CSS by combining identical rules
+  const optimizedCss = combineIdenticalRules(css);
+
+  // Cache the result
+  setCssCache(key, optimizedCss, metadata);
+
+  return optimizedCss;
+}
+
+/**
  * Generates a cache key from an object by stringifying it.
  *
  * @param obj - The object to generate a cache key from.

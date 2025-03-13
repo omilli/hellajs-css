@@ -65,3 +65,76 @@ export function createSelector(key: string, parentSelector: string): string {
   // Standard nesting
   return parentSelector ? `${parentSelector} ${key}` : key;
 }
+
+/**
+ * Combines CSS rules with identical property-value pairs
+ *
+ * @param css - CSS string to optimize
+ * @returns Optimized CSS with combined selectors for identical rules
+ */
+export function combineIdenticalRules(css: string): string {
+  // Store rule bodies and their associated selectors
+  const ruleMap: Record<string, string[]> = {};
+
+  // Regular expression to match CSS rules
+  const rulePattern = /([^{]+)\s*{\s*([^}]+)\s*}/g;
+  let match;
+
+  // Extract all rules
+  while ((match = rulePattern.exec(css)) !== null) {
+    const selector = match[1].trim();
+    // Skip rules with commas as they might already be combined
+    if (selector.includes(",") || selector.startsWith("@")) continue;
+
+    // Preserve original indentation and formatting in rule body
+    const ruleBody = match[2].trim();
+
+    if (!ruleMap[ruleBody]) {
+      ruleMap[ruleBody] = [];
+    }
+    ruleMap[ruleBody].push(selector);
+  }
+
+  // Replace original rules with combined ones
+  let optimizedCss = css;
+
+  for (const [ruleBody, selectors] of Object.entries(ruleMap)) {
+    // Only combine if there are multiple selectors for the same rule
+    if (selectors.length > 1) {
+      // Create individual rule patterns to replace
+      for (const selector of selectors) {
+        const pattern = new RegExp(
+          `${selector.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            "\\$&"
+          )}\\s*{\\s*${ruleBody.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*}`,
+          "g"
+        );
+        // Remove individual rules (except the first one which will be replaced with combined rule)
+        if (selector !== selectors[0]) {
+          optimizedCss = optimizedCss.replace(pattern, "");
+        }
+      }
+
+      // Replace first instance with combined rule
+      const firstSelector = selectors[0];
+      const pattern = new RegExp(
+        `${firstSelector.replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&"
+        )}\\s*{\\s*${ruleBody.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*}`,
+        "g"
+      );
+      const combinedSelector = selectors.join(", ");
+      optimizedCss = optimizedCss.replace(
+        pattern,
+        `${combinedSelector} {\n  ${ruleBody}\n}`
+      );
+    }
+  }
+
+  // Clean up excessive newlines
+  optimizedCss = optimizedCss.replace(/\n{3,}/g, "\n\n");
+
+  return optimizedCss;
+}

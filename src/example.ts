@@ -117,7 +117,11 @@ style(["ul", "ol"], {
   paddingLeft: textVars.list.paddingLeft,
 });
 
-style(["ul ul", "ol ol"], {
+style(["ul ul"], {
+  margin: textVars.list.nestedMargin,
+});
+
+style(["ol ol"], {
   margin: textVars.list.nestedMargin,
 });
 

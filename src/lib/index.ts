@@ -12,6 +12,7 @@ import {
   generateRootCssVariables,
   generateDarkThemeCssVariables,
 } from "./generate";
+import { combineIdenticalRules } from "./utils";
 
 // Regular exports
 export * from "./types";
@@ -151,5 +152,11 @@ export function css(includeStyles = true): string {
     cssChunks.push(collectedStyles.join("\n\n"));
   }
 
-  return cssChunks.join("\n") + "\n";
+  const rawCss = cssChunks.join("\n") + "\n";
+
+  // Optimize the CSS by combining identical rules
+  const optimizedCss = combineIdenticalRules(rawCss);
+
+  // Ensure consistent spacing between rules
+  return optimizedCss.replace(/\n{3,}/g, "\n\n");
 }
