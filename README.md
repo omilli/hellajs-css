@@ -1,4 +1,4 @@
-# hellacss
+# Hella CSS
 
 A type-safe CSS-in-JS library with optimized theming and zero runtime overhead.
 
