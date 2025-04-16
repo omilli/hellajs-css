@@ -1,6 +1,6 @@
 # HellaJS CSS
 
-A type-safe, runtime CSS library with optimized theming and zero runtime overhead.
+A type-safe CSS library with optimized theming and zero runtime overhead.
 
 ## Features
 
